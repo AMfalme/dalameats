@@ -1,0 +1,15 @@
+[
+    { 
+        "id": 1, 
+        "name": "Fresh Mbuzi Meat", 
+        "image": "/meat.jpg",
+        "price": "$10/kg"
+    },
+    { 
+        "id": 2, 
+        "name": "Premium Beef", 
+        "price": "$15/kg", 
+        "image": "/beef.jpg" 
+    }
+  ]
+  
