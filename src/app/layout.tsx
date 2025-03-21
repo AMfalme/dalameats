@@ -4,6 +4,7 @@ import { ActiveThemeProvider } from "@/components/active-theme";
 import "./globals.css";
 import { cn } from "@/lib/utils"
 import { cookies } from "next/headers"
+import Navbar from "@/components/navbar";
 
 
 
@@ -39,7 +40,7 @@ export default async function RootLayout({
             enableColorScheme
           >
             <ActiveThemeProvider initialTheme={activeThemeValue}>
-
+              <Navbar />
               {children}
             </ActiveThemeProvider>
           </ThemeProvider>
