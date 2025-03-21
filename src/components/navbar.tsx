@@ -1,10 +1,9 @@
-import React from 'react';
-
+import React from "react";
 
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from './ui/mode-toggle';
+import { ModeToggle } from "./ui/mode-toggle";
 import Link from "next/link";
-import { ThemeSelector } from './theme-selector';
+import { ThemeSelector } from "./theme-selector";
 
 export default function Navbar() {
   return (
@@ -17,12 +16,12 @@ export default function Navbar() {
         <Link href="/listing" className="text-sm font-medium hover:underline">
           Shop
         </Link>
-        <Link href="/dashboard" className="text-sm font-medium hover:underline">
+        {/* <Link href="/dashboard" className="text-sm font-medium hover:underline">
           Dashboard
-        </Link>
+        </Link> */}
         <Link href="/login" className="text-sm font-medium hover:underline">
-        <Button variant="outline">Login</Button>
-        </Link>     
+          <Button variant="outline">Login</Button>
+        </Link>
         <ModeToggle />
       </div>
     </nav>

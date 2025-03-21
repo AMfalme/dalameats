@@ -1,9 +1,10 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Image from "next/image";
+import loginImage from "@/static/img/dala meats.png";
 export function LoginForm({
   className,
   ...props
@@ -17,7 +18,7 @@ export function LoginForm({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your  Dala Meats account
+                  Login to your Dala Meats account
                 </p>
               </div>
               <div className="grid gap-3">
@@ -87,8 +88,10 @@ export function LoginForm({
             </div>
           </form>
           <div className="bg-muted relative hidden md:block">
-            <img
-              src="/placeholder.svg"
+            <Image
+              src={loginImage}
+              width={500}
+              height={600}
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
@@ -100,5 +103,5 @@ export function LoginForm({
         and <a href="#">Privacy Policy</a>.
       </div>
     </div>
-  )
+  );
 }
