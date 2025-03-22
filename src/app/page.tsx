@@ -1,77 +1,60 @@
 import Image from "next/image";
-
+import { Button } from "@/components/ui/button";
 import logo from "@/static/img/dala_meats_logo.png";
+import beefCategory from "@/static/img/beef steak.png";
+import poultryCategory from "@/static/img/chicken big legs.png";
+import goatCategory from "@/static/img/goatmeat.png";
+import fishCategory from "@/static/img/tilapia.jpg";
+import heroImage from "@/static/img/hero dalameats.png";
+
+import data from "../app/listing/data.json";
+import { Key } from "react";
 export default function Home() {
   return (
-    <div className="grid items-center justify-items-center min-h-screen p-8 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-      <Image
-          className="center m-auto mt-0"
-          src={logo}
-          alt="Dala Meats logo"
-          width={180}
-          height={38}
-          priority
+    <div className="relative min-h-screen bg-background">
+      {/* Hero Section */}
+      <div className="relative w-full h-screen">
+        <Image
+          src={heroImage}
+          alt="Fresh Meat Selection"
+          width={500}
+          height={200}
+          className="absolute inset-0 w-full h-full object-cover brightness-75"
         />
-        <h1 className="text-4xl sm:text-5xl font-bold text-center sm:text-left">
-          Welcome to{" "}
-          <a
-            className="text-primary hover:underline hover:underline-offset-4"
-            href="https://nextjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            DALA MEATS
-          </a>
-        </h1>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Deliveries
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Shop now
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to cart →
-        </a>
-      </footer>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
+          <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg">
+            Fresh. Quality. Delivered.
+          </h1>
+          <p className="mt-3 text-lg md:text-xl drop-shadow-md">
+            Premium Goat, Beef & Chicken – Just a Click Away!
+          </p>
+          <Button className="mt-6 px-6 py-3 text-lg">Shop Now</Button>
+        </div>
+      </div>
+
+      {/* Featured Products */}
+      <div className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-8">
+          Our Best Selections
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {data.slice(0, 4).map((item) => (
+            <div
+              key={item.id}
+              className="bg-white border border-border rounded-2xl shadow-md hover:shadow-lg transition p-4"
+            >
+              <Image
+                src={item.image[0]}
+                alt="Beef Selection"
+                width={500}
+                height={200}
+                className="w-full h-48 object-cover rounded-xl"
+              />
+              <Button className="mt-4 w-full">View More</Button>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

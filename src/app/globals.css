@@ -226,3 +226,18 @@ body {
     @apply !rounded-none !shadow-none;
   }
 }
+
+.relative.w-full.h-screen::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  content: "";
+  background-image: linear-gradient(
+    90deg,
+    #02002473 0%,
+    #32270eab 35%,
+    #00d4ff7a 100%
+  );
+}
