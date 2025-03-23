@@ -1,13 +1,14 @@
 "use client";
 import React from "react";
 
+import { IconBasket } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./ui/mode-toggle";
 import Link from "next/link";
 import { useAuth } from "./providers/auth-provider";
 import { getAuth, signOut } from "firebase/auth";
 import { usePathname } from "next/navigation";
-
+import { CartWidget } from "./ui/cartwidget";
 export default function Navbar() {
   const pathName = usePathname();
   const { user } = useAuth();
@@ -44,6 +45,7 @@ export default function Navbar() {
             <Button variant="outline">Login</Button>
           </Link>
         )}
+        <CartWidget productsCount={4} />
       </div>
     </nav>
   );

@@ -16,12 +16,13 @@ export default function Page() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && !user) router.push("/login");
-  }, [user, loading, router]);
+  // useEffect(() => {
+  //   if (!loading && !user) router.push("/login");
+  // }, [user, loading, router]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!user) return null;
+  // if (loading) return <p>Loading...</p>;
+  // if (!user) return null;
+  // consol
   return (
     <SidebarProvider
       style={
