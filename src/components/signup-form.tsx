@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import loginImage from "@/static/img/dala meats.png";
-import { FirebaseApp } from "firebase/app";
 import Link from "next/link";
 import { useState } from "react";
 import signUp from "@/lib/firebase/auth/signup";

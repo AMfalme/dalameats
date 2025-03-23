@@ -8,7 +8,7 @@ import fishCategory from "@/static/img/tilapia.jpg";
 import heroImage from "@/static/img/hero dalameats.png";
 
 import data from "./catalogue/data.json";
-import { Key } from "react";
+
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-background">

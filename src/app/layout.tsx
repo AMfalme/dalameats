@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ActiveThemeProvider } from "@/components/active-theme";
+import { ActiveThemeProvider } from "@/components/providers/active-theme";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import "./globals.css";
-import { cn } from "@/lib/utils"
-import { cookies } from "next/headers"
+import { cn } from "@/lib/utils";
+import { cookies } from "next/headers";
 import Navbar from "@/components/navbar";
-
-
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,20 +17,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies()
-  const activeThemeValue = cookieStore.get("active_theme")?.value
-  const isScaled = activeThemeValue?.endsWith("-scaled")
+  const cookieStore = await cookies();
+  const activeThemeValue = cookieStore.get("active_theme")?.value;
+  const isScaled = activeThemeValue?.endsWith("-scaled");
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "bg-background overscroll-none font-sans antialiased",
           activeThemeValue ? `theme-${activeThemeValue}` : "",
-          isScaled ? "theme-scaled" : "",
-         
+          isScaled ? "theme-scaled" : ""
         )}
       >
-        <ThemeProvider
+        <AuthProvider>
+          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
@@ -44,6 +42,7 @@ export default async function RootLayout({
               {children}
             </ActiveThemeProvider>
           </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
