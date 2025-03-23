@@ -13,12 +13,18 @@ export default async function LogInWithEmailAndPassword(
     console.log("sign in with email and password response: ", result);
     const user = result.user;
   } catch (error: any) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(
-      "An error occured here sign in with email and password error: "
-    );
-    console.log(error);
+    if (error) {
+      // display error in the notifications
+
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(
+        "An error occured here sign in with email and password error: ",
+        error,
+        errorCode,
+        errorMessage
+      );
+    }
   }
   console.log(result, error);
   return { result, error };

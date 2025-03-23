@@ -27,13 +27,14 @@ export function LoginForm({
       useremail,
       password
     );
+    console.log("the following are the results", result, error);
     if (error) {
+      //display notification on error
       return console.log(error);
+    } else {
+      //display success notification
+      return router.push("/catalogue");
     }
-
-    // else successful
-    console.log(result);
-    return router.push("/catalogue");
   };
 
   return (

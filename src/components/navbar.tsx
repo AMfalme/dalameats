@@ -12,7 +12,6 @@ export default function Navbar() {
   const pathName = usePathname();
   const { user } = useAuth();
   const auth = getAuth();
-  console.log(pathName, "pathname");
   return (
     <nav className="w-full px-6 py-4 bg-background border-b border-border flex items-center justify-between">
       <Link href="/" className="text-xl font-bold text-primary">
