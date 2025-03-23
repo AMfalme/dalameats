@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import data from "./data.json";
@@ -16,8 +17,10 @@ export default function ProductList() {
             height={500}
             className="w-full h-48 object-cover rounded-xl"
           />
-          <h3 className="mt-4 text-lg font-bold">{product.name}</h3>
-          <p className="text-muted-foreground">{product.price}</p>
+          <h3 className="mt-4 text-lg text-gray-600 font-bold">
+            {product.name}
+          </h3>
+          <p className="text-muted-foreground text-red-600">{product.price}</p>
           <div className="mt-4 flex justify-between overflow-x-hidden whitespace-nowrap">
             <Button variant="outline" className="w-1/3 mr-2">
               View Details
