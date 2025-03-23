@@ -7,7 +7,7 @@ import goatCategory from "@/static/img/goatmeat.png";
 import fishCategory from "@/static/img/tilapia.jpg";
 import heroImage from "@/static/img/hero dalameats.png";
 
-import data from "../app/listing/data.json";
+import data from "./catalogue/data.json";
 import { Key } from "react";
 export default function Home() {
   return (

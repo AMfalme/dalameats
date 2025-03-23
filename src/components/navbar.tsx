@@ -13,7 +13,7 @@ export default function Navbar() {
       </Link>
 
       <div className="flex items-center gap-4">
-        <Link href="/listing" className="text-sm font-medium hover:underline">
+        <Link href="/catalogue" className="text-sm font-medium hover:underline">
           Shop
         </Link>
         {/* <Link href="/dashboard" className="text-sm font-medium hover:underline">
