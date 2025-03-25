@@ -2,17 +2,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "./features/counterSlice";
 import cartReducer from "./features/cartSlice";
 
-export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      counter: counterReducer,
-      cart: cartReducer,
-    },
-  });
-};
-
-// Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>;
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+    cart: cartReducer,
+  },
+});
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = AppStore["dispatch"];
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

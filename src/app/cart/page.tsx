@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import beefkidneys from "@/static/img/beef kidneys.png";
 import { useAuth } from "@/components/providers/auth-provider";
-import { CartItem } from "@/lib/utils";
+import { CartItem } from "@/types/cart";
 export default function CartCatalogue() {
   const { user } = useAuth();
   const dispatch = useDispatch<typeof store.dispatch>();

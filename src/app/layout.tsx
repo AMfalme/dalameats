@@ -28,8 +28,8 @@ export default async function RootLayout({
           isScaled ? "theme-scaled" : ""
         )}
       >
-        <AuthProvider>
-          <StoreProvider>
+        <StoreProvider>
+          <AuthProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -42,8 +42,8 @@ export default async function RootLayout({
                 {children}
               </ActiveThemeProvider>
             </ThemeProvider>
-          </StoreProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );
