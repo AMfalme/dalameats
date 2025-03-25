@@ -241,3 +241,17 @@ body {
     #00d4ff7a 100%
   );
 }
+
+.product-icon {
+  color: #fff;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 14px;
+  background-color: #f37b00;
+  border-radius: 25px;
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+  font-weight: bold;
+}

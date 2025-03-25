@@ -9,10 +9,24 @@ import { useAuth } from "./providers/auth-provider";
 import { getAuth, signOut } from "firebase/auth";
 import { usePathname } from "next/navigation";
 import { CartWidget } from "./ui/cartwidget";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store/store";
+interface CartItem {
+  id: number;
+  name: string;
+  price: string;
+  image: string[];
+  quantity: number;
+}
+
 export default function Navbar() {
   const pathName = usePathname();
   const { user } = useAuth();
   const auth = getAuth();
+
+  const totalItems = useSelector(
+    (state: RootState) => state.cart.items.length // Sum all item quantities
+  );
   return (
     <nav className="w-full px-6 py-4 bg-background border-b border-border flex items-center justify-between">
       <Link href="/" className="text-xl font-bold text-primary">
@@ -45,7 +59,7 @@ export default function Navbar() {
             <Button variant="outline">Login</Button>
           </Link>
         )}
-        <CartWidget productsCount={4} />
+        <CartWidget productsCount={totalItems} />
       </div>
     </nav>
   );
