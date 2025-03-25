@@ -2,26 +2,31 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/store/store";
 
-import { addItem, removeItem } from "@/app/store/features/cartSlice";
+import { addItemToCart, removeItem } from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-interface CartItem {
-  id: number;
-  name: string;
-  price: string;
-  quantity: number;
-}
+import Image from "next/image";
+import beefkidneys from "@/static/img/beef kidneys.png";
+import { useAuth } from "@/components/providers/auth-provider";
+import { CartItem } from "@/lib/utils";
 export default function CartCatalogue() {
-  const dispatch = useDispatch();
+  const { user } = useAuth();
+  const dispatch = useDispatch<typeof store.dispatch>();
 
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
 
+  const handleAddToCart = (item: CartItem) => {
+    if (user && user.uid) {
+      dispatch(addItemToCart({ userId: user.uid, item }));
+    }
+  };
+
   const total = cartItems.length;
 
   return (
-    <div className="flex h-screen p-4 md:p-10 gap-4">
+    <div className="flex h-screen">
       {/* Left (Cart Items) */}
       <div className="flex-3 bg-gray-100 p-4 rounded-lg overflow-auto">
         <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
@@ -30,27 +35,38 @@ export default function CartCatalogue() {
         ) : (
           cartItems.map((item) => (
             <Card key={item.id} className="mb-3">
-              <CardContent className="flex justify-between items-center p-4">
+              <CardContent className="flex flex-col p-4">
                 <div>
-                  <h3 className="text-lg font-medium">{item.name}</h3>
-                  <p className="text-gray-600">${item.price} each</p>
+                  <Image
+                    src={beefkidneys}
+                    alt={item.name}
+                    width={100}
+                    height={100}
+                    className="h-32 object-cover rounded-md"
+                  />
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => dispatch(removeItem(item.id))}
-                  >
-                    -
-                  </Button>
-                  <span className="font-semibold">{item.quantity}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => dispatch(addItem(item))}
-                  >
-                    +
-                  </Button>
+                <div className="flex p-4 justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-medium">{item.name}</h3>
+                    <p className="text-gray-600">${item.price} each</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => dispatch(removeItem(item.id))}
+                    >
+                      -
+                    </Button>
+                    <span className="font-semibold">{item.quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAddToCart(item)}
+                    >
+                      +
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
