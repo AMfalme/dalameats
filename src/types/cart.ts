@@ -7,6 +7,12 @@ export interface CartItem {
   quantity: number;
   imageUrl: string;
   productId: string;
+  description: string;
+  isAvailable: true;
+  salesCount: number;
+
+  stock: number;
+  unit: string;
 }
 
 export interface CartState {
