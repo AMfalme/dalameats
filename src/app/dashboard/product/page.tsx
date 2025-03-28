@@ -57,7 +57,7 @@ export default function AdminProductTable() {
     }
   };
 
-  const handleChange = (field: keyof Product, value: string | number) => {
+  const handleChange = (e, field: keyof Product, value: string | number) => {
     setEditedProduct((prev) => ({ ...prev, [field]: value }));
   };
 
