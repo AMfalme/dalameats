@@ -81,7 +81,17 @@ export default function CartCatalogue() {
                       size="sm"
                       onClick={() =>
                         dispatch(
-                          addItemToCart({ userId: "your-user-id", item })
+                          addItemToCart({
+                            userId: "your-user-id",
+                            item: {
+                              ...item,
+                              description: item.description || "",
+                              isAvailable: item.isAvailable || true,
+                              salesCount: item.salesCount || 0,
+                              stock: item.stock || 0,
+                              unit: item.unit || "unit",
+                            },
+                          })
                         )
                       }
                     >
