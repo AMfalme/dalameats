@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/app/store/store";
 import { addItemToCart } from "@/app/store/features/cartSlice";
 import { useAuth } from "@/components/providers/auth-provider";
-import beefCategory from "@/static/img/beef steak.png";
 
 interface ProductCardProps {
   product: Product;

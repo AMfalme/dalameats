@@ -3,10 +3,9 @@ import { FunctionComponent } from "react";
 import shoppingCart from "@/static/img/dala_meats_logo.png";
 // import classes from "./cart-widget.module.scss";
 import { useRouter } from "next/navigation";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
-import Image from "next/image";
 import { IconShoppingCart } from "@tabler/icons-react";
 
 interface CartItem {
@@ -25,7 +24,7 @@ export const CartWidget: FunctionComponent<Props> = ({ productsCount }) => {
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
-  const cartItemsLength = cartItems.length;
+  // const cartItemsLength = cartItems.length;
 
   const navigate = useRouter();
   const navigateToCart = () => {

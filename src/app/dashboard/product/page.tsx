@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import Image from "next/image";
 // import { fetchProducts, updateProduct } from "@/utils/firestore";
 import data from "@/app/catalogue/data.json";

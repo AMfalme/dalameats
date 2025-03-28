@@ -1,6 +1,6 @@
 import ProductCard from "@/components/ui/product-card";
 import { getProducts } from "@/lib/products";
-import { Product } from "@/types/products";
+// import { Product } from "@/types/products";
 
 export default async function ProductList() {
   const products = await getProducts();

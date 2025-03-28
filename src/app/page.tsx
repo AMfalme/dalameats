@@ -1,10 +1,6 @@
 "use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import logo from "@/static/img/dala_meats_logo.png";
-import poultryCategory from "@/static/img/chicken big legs.png";
-import goatCategory from "@/static/img/goatmeat.png";
-import fishCategory from "@/static/img/tilapia.jpg";
 import heroImage from "@/static/img/hero dalameats.png";
 import { useRouter } from "next/navigation";
 import data from "./catalogue/data.json";

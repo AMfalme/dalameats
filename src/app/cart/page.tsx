@@ -6,7 +6,6 @@ import { addItemToCart, removeItem } from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import beefkidneys from "@/static/img/beef kidneys.png";
 import { useAuth } from "@/components/providers/auth-provider";
 import { CartItem } from "@/types/cart";
 export default function CartCatalogue() {
@@ -17,17 +16,17 @@ export default function CartCatalogue() {
     (state: RootState) => state.cart.items
   );
 
-  const handleAddToCart = (item: CartItem) => {
-    if (user && user.uid) {
-      dispatch(addItemToCart({ userId: user.uid, item }));
-    }
-  };
+  // const handleAddToCart = (item: CartItem) => {
+  //   if (user && user.uid) {
+  //     dispatch(addItemToCart({ userId: user.uid, item }));
+  //   }
+  // };
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  const total = cartItems.length;
+  // const total = cartItems.length;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 h-screen p-6">

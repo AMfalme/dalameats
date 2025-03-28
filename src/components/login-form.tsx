@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import loginImage from "@/static/img/dala meats.png";
-import { FirebaseApp } from "firebase/app";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

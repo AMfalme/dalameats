@@ -1,25 +1,21 @@
-import { selectTotalQuantity } from "./cartSlice";
 // redux/slices/cartSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { CartItem, CartState } from "@/types/cart";
+import { CartItem } from "@/types/cart";
 import {
   doc,
   getDoc,
-  setDoc,
   where,
   query,
   collection,
   getDocs,
   updateDoc,
-  arrayUnion,
   Timestamp,
   addDoc,
   DocumentData,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { Product } from "@/types/products";
-import { CardHeader } from "@/components/ui/card";
 
 const initialState: {
   items: CartItem[];

@@ -7,10 +7,11 @@ export default async function signUp(email: string, password: string) {
   const error = null;
   try {
     result = await createUserWithEmailAndPassword(auth, email, password);
-    const user = result.user;
+    // const user = result.user;
   } catch (error: any) {
     const errorCode = error.code;
     const errorMessage = error.message;
+    console.log(errorCode, errorMessage);
   }
 
   return { result, error };

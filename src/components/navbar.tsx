@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 
-import { IconBasket } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./ui/mode-toggle";
 import Link from "next/link";
@@ -11,7 +10,6 @@ import { usePathname } from "next/navigation";
 import { CartWidget } from "./ui/cartwidget";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../app/store/store";
-import { loadCartFromFirestore } from "@/lib/firebase/firestore-utils";
 import { fetchCartItems } from "@/app/store/features/cartSlice";
 export default function Navbar() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
