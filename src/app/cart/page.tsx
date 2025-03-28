@@ -69,7 +69,7 @@ export default function CartCatalogue() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => dispatch(removeItem(item.id))}
+                      onClick={() => dispatch(removeItem({ itemId: item.id }))}
                     >
                       -
                     </Button>
