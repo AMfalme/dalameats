@@ -1,38 +1,43 @@
-// import { Listing } from "@/components/login-form"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card";
-import Image from 'next/image';
-import beefkidneys from "@/static/img/beef kidneys.png";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Product } from "@/types/products";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/app/store/store";
+import { addItemToCart } from "@/app/store/features/cartSlice";
+import { useAuth } from "@/components/providers/auth-provider";
 
-interface ProductCardProps {
-  product: {
-    id: number;
-    name: string;
-    image: string;
-    price: string;
+export function ProductCard(product: Product) {
+  const { user } = useAuth();
+  const userId = user?.uid;
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleAddToCart = (item: Product) => {
+    if (user && userId) {
+      dispatch(addItemToCart({ userId: userId, item }));
+    }
   };
-}
-  export default function ProductCard({ product }: ProductCardProps) {
-    const { id, name,  price } = product;
-    return (
-      <div className="bg-muted flex min-h-svh flex-col items-center justify-center   md:p-10">
-       <Card key={id} className="shadow-lg">
-          <CardHeader>
-            <CardTitle>{name}</CardTitle>
-          </CardHeader>
-          <CardContent>
-          <Image src={beefkidneys} alt={name} width={500} height={500} className="w-full h-32 object-cover rounded-md" />
-           
-            <p className="mt-2 text-lg font-semibold">{price}</p>
-          </CardContent>
-        </Card>
+  return (
+    <div
+      key={product.id}
+      className="bg-background border border-border rounded-2xl shadow-md hover:shadow-lg transition p-4"
+    >
+      <Image
+        src={product.imageUrl}
+        alt={product.name}
+        width={500}
+        height={500}
+        className="w-full h-48 object-cover rounded-xl"
+      />
+      <h3 className="mt-4 text-lg font-bold">{product.name}</h3>
+      <p className="text-muted-foreground">{product.price}</p>
+      <div className="mt-4 flex justify-between overflow-x-hidden whitespace-nowrap">
+        <Button variant="outline" className="w-1/3 mr-2">
+          View Details
+        </Button>
+        <Button className="w-1/3 ml-2" onClick={() => handleAddToCart(product)}>
+          Add to Cart
+        </Button>
       </div>
-    );
-  }
-  
+    </div>
+  );
+}

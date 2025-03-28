@@ -1,15 +1,15 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import logo from "@/static/img/dala_meats_logo.png";
-import beefCategory from "@/static/img/beef steak.png";
-import poultryCategory from "@/static/img/chicken big legs.png";
-import goatCategory from "@/static/img/goatmeat.png";
-import fishCategory from "@/static/img/tilapia.jpg";
 import heroImage from "@/static/img/hero dalameats.png";
+import { useRouter } from "next/navigation";
+import data from "./catalogue/data.json";
 
-import data from "../app/listing/data.json";
-import { Key } from "react";
 export default function Home() {
+  const router = useRouter();
+  const handleRedirect = () => {
+    router.push("/catalogue");
+  };
   return (
     <div className="relative min-h-screen bg-background">
       {/* Hero Section */}
@@ -28,7 +28,9 @@ export default function Home() {
           <p className="mt-3 text-lg md:text-xl drop-shadow-md">
             Premium Goat, Beef & Chicken – Just a Click Away!
           </p>
-          <Button className="mt-6 px-6 py-3 text-lg">Shop Now</Button>
+          <Button className="mt-6 px-6 py-3 text-lg" onClick={handleRedirect}>
+            Shop Now
+          </Button>
         </div>
       </div>
 
@@ -44,7 +46,7 @@ export default function Home() {
               className="bg-white border border-border rounded-2xl shadow-md hover:shadow-lg transition p-4"
             >
               <Image
-                src={item.image[0]}
+                src={item.imageUrl}
                 alt="Beef Selection"
                 width={500}
                 height={200}

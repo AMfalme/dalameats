@@ -1,0 +1,172 @@
+{
+  "state": {
+    "recentlyUsedEventTypes": [],
+    "eventTypes": { "ids": [], "entities": {} },
+    "profiles": { "ids": [], "entities": {} },
+    "loadingEventTypes": false,
+    "lastFetchedAt": null,
+    "initialEventsLoading": false,
+    "events": {},
+    "externalEvents": {},
+    "ascStartTime": "",
+    "ascEndTime": "",
+    "ascLoading": false,
+    "ascNextPageToken": "",
+    "descStartTime": "",
+    "descEndTime": "",
+    "descLoading": false,
+    "descNextPageToken": "",
+    "organizationMembers": {},
+    "nextUpEvent": null,
+    "contacts": { "entities": {}, "ids": [] },
+    "contactsMeetingHistory": {},
+    "favoriteContacts": { "entities": {}, "ids": [] },
+    "contactsLastFetchedAt": null,
+    "isInitialContactsLoading": false,
+    "isLoadingContactsNextPage": false,
+    "isRefetchingContacts": false,
+    "isFilteredContactsLoading": false,
+    "contactsNextPageToken": "",
+    "contactsSearchQuery": "",
+    "isClosed": false,
+    "wallspot": { "wall": "right", "spot": 150 },
+    "user": null,
+    "userLoaded": false,
+    "userToken": null,
+    "userLastUsed": null,
+    "organization": null,
+    "integrations": {
+      "gmailv1": {
+        "id": "gmailv1",
+        "title": "Gmail",
+        "description": "Access Calendly and share meeting links directly from Gmail.",
+        "showNewBadge": false,
+        "enabled": true,
+        "permitted": true,
+        "helpInfo": {
+          "chrome": "https://help.calendly.com/hc/en-us/articles/10148720238871-Using-the-Calendly-extension-for-Gmail#using-the-calendly-extension-for-gmail-0-0",
+          "firefox": "https://help.calendly.com/hc/en-us/articles/10148720238871-Using-the-Calendly-extension-for-Gmail#using-the-calendly-extension-for-gmail-0-0"
+        },
+        "analytics": {
+          "onEnable": "extension_integrations.enable_gmail",
+          "onDisable": "extension_integrations.disable_gmail"
+        },
+        "popoverData": { "showPopover": false, "showBar": false }
+      },
+      "gongv1": {
+        "id": "gongv1",
+        "title": "Gong",
+        "description": "Access Calendly and share meeting links directly from Gong.",
+        "showNewBadge": false,
+        "enabled": true,
+        "permitted": true,
+        "helpInfo": {
+          "chrome": "https://help.calendly.com/hc/en-us/articles/15254486497943",
+          "firefox": "https://help.calendly.com/hc/en-us/articles/15254486497943"
+        },
+        "analytics": {
+          "onEnable": "extension_integrations.enable_gong",
+          "onDisable": "extension_integrations.disable_gong"
+        },
+        "popoverData": { "showPopover": false }
+      },
+      "gcalv1": {
+        "id": "gcalv1",
+        "title": "Google Calendar",
+        "description": "View and manage Calendly events in Google Calendar.",
+        "showNewBadge": false,
+        "enabled": true,
+        "permitted": true,
+        "helpInfo": {
+          "chrome": "https://help.calendly.com/hc/en-us/articles/10636762934679#using-the-calendly-extension-for-google-calendar-0-0",
+          "firefox": "https://help.calendly.com/hc/en-us/articles/10636762934679#using-the-calendly-extension-for-google-calendar-0-0"
+        },
+        "analytics": {
+          "onEnable": "extension_integrations.enable_gcal",
+          "onDisable": "extension_integrations.disable_gcal"
+        },
+        "popoverData": { "showPopover": false }
+      },
+      "linkedinv1": {
+        "id": "linkedinv1",
+        "title": "LinkedIn Messaging",
+        "description": "Get meetings booked quickly right from where you message people on LinkedIn.",
+        "showNewBadge": false,
+        "enabled": true,
+        "permitted": true,
+        "helpInfo": {
+          "chrome": "https://help.calendly.com/hc/en-us/articles/4500734570263-Calendly-for-LinkedIn-Messaging-Extension-",
+          "firefox": "https://help.calendly.com/hc/en-us/articles/4500734570263-Calendly-for-LinkedIn-Messaging-Extension-"
+        },
+        "analytics": {
+          "onEnable": "extension_integrations.enable_linkedin",
+          "onDisable": "extension_integrations.disable_linkedin"
+        },
+        "popoverData": { "showPopover": false }
+      }
+    },
+    "flags": {
+      "invitee_experience_extension_hrr": {
+        "name": "invitee_experience_extension_hrr",
+        "enabled": false,
+        "loading": false,
+        "last_checked": null
+      },
+      "clients_q3_et_cards_sul_feature": {
+        "name": "clients_q3_et_cards_sul_feature",
+        "enabled": false,
+        "loading": false,
+        "last_checked": null
+      },
+      "meeting_intelligence_la": {
+        "name": "meeting_intelligence_la",
+        "enabled": false,
+        "loading": false,
+        "last_checked": null
+      },
+      "meeting_intelligence": {
+        "name": "meeting_intelligence",
+        "enabled": false,
+        "loading": false,
+        "last_checked": null
+      },
+      "clients_meeting_intel_feature": {
+        "name": "clients_meeting_intel_feature",
+        "enabled": false,
+        "loading": false,
+        "last_checked": null
+      },
+      "host_experience_et_card_action_update": {
+        "name": "host_experience_et_card_action_update",
+        "enabled": false,
+        "loading": false,
+        "last_checked": null
+      }
+    },
+    "keywordDetectionEnabled": true,
+    "keywordDetectionPhrases": [],
+    "phrasesLastFetchedAt": null,
+    "trackedMeetings": {},
+    "trackedMeetingSummary": {},
+    "meetingIntelligenceSettings": { "user": [], "org": [] },
+    "meetingIntelBannerDismissedAt": null,
+    "meetingIntelMetering": {
+      "status": null,
+      "quota": 0,
+      "usage": 0,
+      "resetsAfter": null
+    },
+    "sulMetering": null,
+    "meetingCursorPast": null,
+    "meetingCursorFuture": null,
+    "canDisplayMeetings": false,
+    "meetings": {},
+    "internalConflicts": {},
+    "pageSize": 10,
+    "maxYearRange": 3,
+    "billing": {
+      "summary": { "usageInformation": { "meetingIntelligenceAccess": null } }
+    }
+  },
+  "version": 2
+}
