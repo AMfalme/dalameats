@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 
-import shoppingCart from "@/static/img/dala_meats_logo.png";
 // import classes from "./cart-widget.module.scss";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -21,9 +20,9 @@ interface Props {
 }
 
 export const CartWidget: FunctionComponent<Props> = ({ productsCount }) => {
-  const cartItems: CartItem[] = useSelector(
-    (state: RootState) => state.cart.items
-  );
+  // const cartItems: CartItem[] = useSelector(
+  //   (state: RootState) => state.cart.items
+  // );
   // const cartItemsLength = cartItems.length;
 
   const navigate = useRouter();

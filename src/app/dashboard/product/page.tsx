@@ -29,40 +29,13 @@ export default function AdminProductTable() {
   const handleEdit = (product: Product) => {
     setEditingId(product.id);
     setEditedProduct({ ...product });
+    console.log(setProducts);
   };
 
   const handleSave = async () => {
     if (editingId) {
       try {
         console.log("we got here: ");
-        const products: Product = [
-          {
-            id: 1,
-            name: "Beef Steak",
-            price: "Ksh 1,200/kg",
-            imageUrl: "/img/beef steak.png",
-            quantity: 0,
-            category: "beef",
-            description: "How are you",
-            isAvailable: true,
-            salesCount: 400,
-            stock: 1000,
-            unit: "kg",
-          },
-          {
-            id: 2,
-            name: "Beef Kidneys",
-            price: "Ksh 950/kg",
-            imageUrl: "/img/beef kidneys.png",
-            quantity: 0,
-            category: "beef",
-            description: "How are you",
-            isAvailable: true,
-            salesCount: 400,
-            stock: 1000,
-            unit: "kg",
-          },
-        ];
 
         // const response = await fetch("/api/add-products", {
         //   method: "POST",

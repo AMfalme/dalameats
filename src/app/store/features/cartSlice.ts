@@ -32,7 +32,7 @@ const initialState: {
 // Async thunk to fetch product details and add to cart
 export const addItemToCart = createAsyncThunk(
   "cart/addItem",
-  async ({ userId, item }: { userId: string; item: Product }, { dispatch }) => {
+  async ({ userId, item }: { userId: string; item: Product }) => {
     try {
       const productRef = doc(db, "products", item?.id);
       const productSnap = await getDoc(productRef);

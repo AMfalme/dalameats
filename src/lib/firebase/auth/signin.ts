@@ -11,18 +11,18 @@ export default async function LogInWithEmailAndPassword(
   try {
     result = await signInWithEmailAndPassword(auth, email, password);
     console.log("sign in with email and password response: ", result);
-    const user = result.user;
-  } catch (error: any) {
+    // const user = result.user;
+  } catch (error) {
     if (error) {
       // display error in the notifications
 
-      const errorCode = error.code;
-      const errorMessage = error.message;
+      // const errorCode = error.code;
+      // const errorMessage = error.message;
       console.log(
         "An error occured here sign in with email and password error: ",
-        error,
-        errorCode,
-        errorMessage
+        error
+        // errorCode,
+        // errorMessage
       );
     }
   }
