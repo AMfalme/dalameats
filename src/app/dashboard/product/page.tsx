@@ -13,9 +13,8 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-import { Product } from "@/types/product";
-
+import { Product } from "@/types/products";
+import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 export default function AdminProductTable() {
   const [products, setProducts] = useState<Product[]>(data);
