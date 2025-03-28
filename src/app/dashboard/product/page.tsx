@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/products";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 export default function AdminProductTable() {
   const [products, setProducts] = useState<Product[]>(data);
@@ -57,7 +57,11 @@ export default function AdminProductTable() {
     }
   };
 
-  const handleChange = (e, field: keyof Product, value: string | number) => {
+  const handleChange = (
+    _e: ChangeEvent<HTMLInputElement>,
+    field: keyof Product,
+    value: string | number
+  ) => {
     setEditedProduct((prev) => ({ ...prev, [field]: value }));
   };
 
