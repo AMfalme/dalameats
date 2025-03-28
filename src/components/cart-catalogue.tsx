@@ -2,18 +2,14 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/store/store";
 
-import { addItem, removeItem } from "@/app/store/features/cartSlice";
+import addItem from "@/app/store/features/cartSlice";
+import removeItem from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import beefkidneys from "@/static/img/beef kidneys.png";
+import { CartItem } from "@/types/cart";
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: string;
-  quantity: number;
-}
 export function CartCatalogue() {
   const dispatch = useDispatch();
 
