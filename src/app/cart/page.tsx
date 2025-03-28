@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useAuth } from "@/components/providers/auth-provider";
 import { CartItem } from "@/types/cart";
 export default function CartCatalogue() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const dispatch = useDispatch<typeof store.dispatch>();
 
   const cartItems: CartItem[] = useSelector(
