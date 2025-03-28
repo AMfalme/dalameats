@@ -1,3 +1,4 @@
+import { selectTotalQuantity } from "./cartSlice";
 // redux/slices/cartSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -20,15 +21,22 @@ import { db } from "@/lib/firebase/config";
 import { Product } from "@/types/products";
 import { CardHeader } from "@/components/ui/card";
 
-const initialState: { items: CartItem[]; loading: boolean } = {
+const initialState: {
+  items: CartItem[];
+  totalQuantity: number;
+  loading: boolean;
+  totalPrice: number;
+} = {
   items: [],
+  totalQuantity: 0,
   loading: false,
+  totalPrice: 0,
 };
 
 // Async thunk to fetch product details and add to cart
 export const addItemToCart = createAsyncThunk(
   "cart/addItem",
-  async ({ userId, item }: { userId: string; item: Product }, { getState }) => {
+  async ({ userId, item }: { userId: string; item: Product }, { dispatch }) => {
     try {
       const productRef = doc(db, "products", item?.id);
       const productSnap = await getDoc(productRef);
@@ -45,7 +53,7 @@ export const addItemToCart = createAsyncThunk(
         productId: item.id,
       };
 
-      // Check if user already has an active cart
+      // Check for active cart
       const cartRef = collection(db, "cart");
       const q = query(
         cartRef,
@@ -61,58 +69,43 @@ export const addItemToCart = createAsyncThunk(
         const cartId = cartDoc.id;
         const cartDataRef = doc(db, "cart", cartId);
         cartData = cartDoc.data();
-        console.log("cartData: ", cartData);
-        console.log("productData: ", productData);
 
-        // if active cart exists, check if product is already in cart.
-        // Check if item is already in cart
-        console.log(productData.id);
-        const existingItemIndex = cartData.items.findIndex(
+        // ✅ Ensure `cartData.items` is always an array
+        const cartItems: CartItem[] = Array.isArray(cartData.items)
+          ? cartData.items
+          : [];
+        // ✅ Find existing item
+
+        const existingItemIndex = cartItems.findIndex(
           (product: CartItem) => product.productId === item.id
         );
         // if an item exists, just update quantity and totalPrice
         console.log("existingItemIndex: ", existingItemIndex);
+        let updatedItems;
         if (existingItemIndex !== -1) {
-          console.log("Item already in cart, updating quantity: ", cartData);
-          console.log("cartData.items: ", cartData.items);
-          const updatedItems = cartData.items.map((cartItem: CartItem) => {
+          updatedItems = cartData.items.map((cartItem: CartItem) => {
             console.log("cartItem: ", cartItem);
             return cartItem.productId === item.id
               ? { ...cartItem, quantity: cartItem.quantity + 1 } // ✅ Now updates the correct item
               : cartItem;
           });
 
-          // update
-          const totalPrice = updatedItems.reduce(
-            (acc: number, cartItem: CartItem) =>
-              acc + cartItem.price * cartItem.quantity,
-            0
-          );
-          await updateDoc(cartDataRef, {
-            items: updatedItems,
-            totalPrice: totalPrice,
-            updatedAt: Timestamp.now(),
-          });
-
           // console.log("Cart item quantity updated");
         } else {
-          console.log("item not in cart");
-          // if item does not exist, add it to the cart
-          const updatedItems = [...cartData.items, cartNewData]; // ✅ Append new item
-          const totalPrice = updatedItems.reduce(
-            (acc: number, cartItem: CartItem) =>
-              acc + cartItem.price * cartItem.quantity,
-            0
-          );
-          console.log("new cart items: ", updatedItems);
-          await updateDoc(cartDataRef, {
-            items: updatedItems,
-            totalPrice: totalPrice,
-            updatedAt: Timestamp.now(),
-          });
-
-          // console.log("New cart item added");
+          updatedItems = [...cartData.items, cartNewData]; // ✅ Append new item
         }
+        // update
+        const totalPrice = updatedItems.reduce(
+          (acc: number, cartItem: CartItem) =>
+            acc + cartItem.price * cartItem.quantity,
+          0
+        );
+        await updateDoc(cartDataRef, {
+          items: updatedItems,
+          totalPrice: totalPrice,
+          updatedAt: Timestamp.now(),
+        });
+        return updatedItems;
       } else {
         // console.log("No active cart found for this user");
 
@@ -134,30 +127,38 @@ export const addItemToCart = createAsyncThunk(
         };
         // console.log("newCart: ", newCart);
         await addDoc(cartRef, newCart);
+        return [newCart];
         // console.log("New cart created and item added");
       }
-
-      // console.log("adding to cart in firestore");
-
-      // await setDoc(cartRef, updatedCartData, { merge: true });
-
-      console.log("Cart saved successfully!");
-      return cartSnapshot.empty
-        ? [
-            {
-              name: item.name,
-              price: item.price,
-              imageUrl: item.imageUrl,
-              quantity: 1,
-              productId: item.id,
-            },
-          ]
-        : cartData?.items || []; // Safely handle undefined cartData
     } catch (error) {
       console.error("Error saving cart:", error);
     }
 
     // return updatedItems; // Return updated cart for Redux state
+  }
+);
+
+export const fetchCartItems = createAsyncThunk(
+  "cart/fetchCartItems",
+  async (userId: string) => {
+    try {
+      const cartRef = collection(db, "cart");
+      const q = query(
+        cartRef,
+        where("userId", "==", userId),
+        where("status", "==", "active")
+      );
+      const cartSnapshot = await getDocs(q);
+
+      if (!cartSnapshot.empty) {
+        const cartData = cartSnapshot.docs[0].data();
+        return Array.isArray(cartData.items) ? cartData.items : [];
+      }
+      return []; // Return empty cart if no active cart exists
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      throw error;
+    }
   }
 );
 
@@ -168,15 +169,29 @@ const cartSlice = createSlice({
     removeItem: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
     },
+    updateCart: (state, action) => {
+      state.items = action.payload;
+      state.totalQuantity = action.payload.reduce(
+        (sum: number, item: CartItem) => sum + item.quantity,
+        0
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addItemToCart.pending, (state) => {
+      .addCase(fetchCartItems.pending, (state) => {
         state.loading = true;
       })
-      .addCase(addItemToCart.fulfilled, (state, action) => {
+      .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.items = action.payload;
         state.loading = false;
+      })
+      .addCase(fetchCartItems.rejected, (state, action) => {
+        console.error("Error fetching cart:", action.error.message);
+        state.loading = false;
+      })
+      .addCase(addItemToCart.pending, (state) => {
+        state.loading = true;
       })
       .addCase(addItemToCart.rejected, (state, action) => {
         console.error("Error adding item:", action.error.message);

@@ -50,7 +50,7 @@ export default function Home() {
               className="bg-white border border-border rounded-2xl shadow-md hover:shadow-lg transition p-4"
             >
               <Image
-                src={item.image[0]}
+                src={item.imageUrl}
                 alt="Beef Selection"
                 width={500}
                 height={200}

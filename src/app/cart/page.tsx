@@ -22,35 +22,51 @@ export default function CartCatalogue() {
       dispatch(addItemToCart({ userId: user.uid, item }));
     }
   };
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   const total = cartItems.length;
 
   return (
-    <div className="flex h-screen">
-      {/* Left (Cart Items) */}
-      <div className="flex-3 bg-gray-100 p-4 rounded-lg overflow-auto">
-        <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
+    <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 h-screen p-6">
+      {/* Left Section (Cart Items) */}
+      <div className="bg-gray-100 p-6 rounded-lg overflow-auto shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
+
         {cartItems.length === 0 ? (
-          <p className="text-gray-500">No items in cart.</p>
+          <p className="text-gray-500 text-center py-4">No items in cart.</p>
         ) : (
-          cartItems.map((item) => (
-            <Card key={item.id} className="mb-3">
-              <CardContent className="flex flex-col p-4">
-                <div>
+          <div className="space-y-4">
+            {cartItems.map((item) => (
+              <Card key={item.id} className="p-4 shadow-lg">
+                <CardContent className="flex items-center gap-4">
+                  {/* Product Image */}
                   <Image
-                    src={beefkidneys}
+                    src={item.imageUrl}
                     alt={item.name}
                     width={100}
                     height={100}
-                    className="h-32 object-cover rounded-md"
+                    className="h-24 w-24 object-cover rounded-md"
                   />
-                </div>
-                <div className="flex p-4 justify-between items-center">
-                  <div>
-                    <h3 className="text-lg font-medium">{item.name}</h3>
-                    <p className="text-gray-600">${item.price} each</p>
+
+                  {/* Product Details */}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold">{item.name}</h3>
+                    <p className="text-gray-600">
+                      ${item.price.toFixed(2)} each
+                    </p>
+                    <p className="text-sm font-medium text-gray-700">
+                      Total:{" "}
+                      <span className="text-blue-600">
+                        KSH {(item.price * item.quantity).toFixed(2)}
+                      </span>
+                    </p>
                   </div>
-                  <div className="flex items-center gap-2">
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-3">
                     <Button
                       variant="outline"
                       size="sm"
@@ -58,26 +74,34 @@ export default function CartCatalogue() {
                     >
                       -
                     </Button>
-                    <span className="font-semibold">{item.quantity}</span>
+                    <span className="text-lg font-semibold">
+                      {item.quantity}
+                    </span>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleAddToCart(item)}
+                      onClick={() =>
+                        dispatch(
+                          addItemToCart({ userId: "your-user-id", item })
+                        )
+                      }
                     >
                       +
                     </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Right (Total & Checkout) */}
-      <div className="flex-1 bg-white p-6 shadow-lg rounded-lg flex flex-col justify-between">
-        <h2 className="text-xl font-semibold">Order Summary</h2>
-        <p className="text-lg font-bold">Total: ${total.toFixed(2)}</p>
+      {/* Right Section (Order Summary) */}
+      <div className="bg-white p-6 shadow-lg rounded-lg flex flex-col h-48">
+        <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+        <p className="text-lg font-semibold">
+          Total: <span className="text-blue-600">KSH {totalPrice}</span>
+        </p>
         <Button className="w-full mt-4">Proceed to Checkout</Button>
       </div>
     </div>
