@@ -6,7 +6,7 @@ import { addItemToCart, removeItem } from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useAuth } from "@/components/providers/auth-provider";
+// import { useAuth } from "@/components/providers/auth-provider";
 import { CartItem } from "@/types/cart";
 export default function CartCatalogue() {
   // const { user } = useAuth();
