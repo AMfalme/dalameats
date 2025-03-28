@@ -5,6 +5,9 @@ import { RootState } from "@/app/store/store";
 import { addItem, removeItem } from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import beefkidneys from "@/static/img/beef kidneys.png";
+
 interface CartItem {
   id: number;
   name: string;
@@ -31,7 +34,15 @@ export function CartCatalogue() {
           cartItems.map((item) => (
             <Card key={item.id} className="mb-3">
               <CardContent className="flex justify-between items-center p-4">
+                <div>hello</div>
                 <div>
+                  <Image
+                    src={beefkidneys}
+                    alt={item.name}
+                    width={500}
+                    height={500}
+                    className="w-full h-32 object-cover rounded-md"
+                  />
                   <h3 className="text-lg font-medium">{item.name}</h3>
                   <p className="text-gray-600">${item.price} each</p>
                 </div>

@@ -3,64 +3,118 @@
     "id": 1,
     "name": "Beef Steak",
     "price": "Ksh 1,200/kg",
-    "image": ["/img/beef steak.png"],
-    "quantity": 0
+    "imageUrl": "/img/beef steak.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
   {
     "id": 2,
     "name": "Beef Kidneys",
     "price": "Ksh 950/kg",
-    "image": ["/img/beef kidneys.png"],
-    "quantity": 0
+    "imageUrl": "/img/beef kidneys.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
   {
     "id": 3,
     "name": "Boneless chicken Breast",
     "price": "Ksh 1,200/kg",
-    "image": ["/img/boneless chicken breast.png"],
-    "quantity": 0
+    "imageUrl": "/img/boneless chicken breast.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
   {
     "id": 4,
     "name": "Chicken Big legs",
     "price": "Ksh 1,500/kg",
-    "image": ["/img/chicken big legs.png"],
-    "quantity": 0
+    "imageUrl": "/img/chicken big legs.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
 
   {
     "id": 5,
     "name": "Chicken Drumsticks",
     "price": "Ksh 1,200/kg",
-    "image": ["/img/chicken drumsticks.png"],
-    "quantity": 0
+    "imageUrl": "/img/chicken drumsticks.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
   {
     "id": 6,
     "name": "chicken gizzards",
     "price": "Ksh 100/kg",
-    "image": ["/img/chicken gizzards.png"],
-    "quantity": 0
+    "imageUrl": "/img/chicken gizzards.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
   {
     "id": 7,
     "name": "full goat matumbo",
     "price": "Ksh 350/kg",
-    "image": ["/img/full goat matumbo.png"],
-    "quantity": 0
+    "imageUrl": "/img/full goat matumbo.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
   {
     "id": 8,
     "name": "minced meat",
     "price": "Ksh 600/kg",
-    "image": ["/img/minced meat.png"],
-    "quantity": 0
+    "imageUrl": "/img/minced meat.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   },
   {
     "id": 9,
     "name": "nile perch",
     "price": "Ksh 1,500/kg",
-    "image": ["/img/nile perch fillets.png"],
-    "quantity": 0
+    "imageUrl": "/img/nile perch fillets.png",
+    "quantity": 0,
+    "category": "beef",
+    "description": "How are you",
+    "isAvailable": true,
+    "salesCount": 400,
+    "stock": 1000,
+    "unit": "kg"
   }
 ]

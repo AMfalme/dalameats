@@ -1,9 +1,24 @@
 // redux/slices/cartSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { CartItem } from "@/types/cart";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { CartItem, CartState } from "@/types/cart";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  where,
+  query,
+  collection,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  Timestamp,
+  addDoc,
+  DocumentData,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
+import { Product } from "@/types/products";
+import { CardHeader } from "@/components/ui/card";
 
 const initialState: { items: CartItem[]; loading: boolean } = {
   items: [],
@@ -13,65 +28,136 @@ const initialState: { items: CartItem[]; loading: boolean } = {
 // Async thunk to fetch product details and add to cart
 export const addItemToCart = createAsyncThunk(
   "cart/addItem",
-  async (
-    { userId, item }: { userId: string; item: CartItem },
-    { getState }
-  ) => {
-    console.log("adding to cart step one call");
-    const productRef = doc(db, "products", item.id);
-    console.log("adding to cart step two call");
-    const productSnap = await getDoc(productRef);
-
-    if (!productSnap.exists()) {
-      throw new Error(`Product not found: ${item.id}`);
-    }
-    console.log("product found");
-    const productData = productSnap.data();
-    const newItem: CartItem = {
-      id: item.id,
-      name: productData.name,
-      price: productData.price,
-      imageUrl: productData.imageUrl,
-      quantity: 1,
-    };
-
-    // Get current cart state
-    const state = getState() as { cart: { items: CartItem[] } };
-    const existingItem = state.cart.items.find(
-      (product) => product.id === item.id
-    );
-
-    // Update cart items
-    const updatedItems = existingItem
-      ? state.cart.items.map((product) =>
-          product.id === item.id
-            ? { ...product, quantity: product.quantity + 1 }
-            : product
-        )
-      : [...state.cart.items, newItem];
-
-    // Save to Firestore
-    const cartData = {
-      userId,
-      items: updatedItems,
-      totalPrice: updatedItems.reduce(
-        (acc, p) => acc + p.quantity * p.price,
-        0
-      ),
-      updatedAt: new Date(),
-    };
-    console.log("adding to cart in firestore");
+  async ({ userId, item }: { userId: string; item: Product }, { getState }) => {
     try {
-      console.log("cartData: ", cartData);
-      const cartRef = doc(db, "cart", userId);
-      await setDoc(cartRef, cartData, { merge: true });
+      const productRef = doc(db, "products", item?.id);
+      const productSnap = await getDoc(productRef);
+
+      if (!productSnap.exists()) {
+        throw new Error(`Product not found: ${item.id}`);
+      }
+      const productData = productSnap.data();
+      const cartNewData = {
+        name: productData.name,
+        price: productData.price,
+        quantity: 1,
+        imageUrl: productData.imageUrl,
+        productId: item.id,
+      };
+
+      // Check if user already has an active cart
+      const cartRef = collection(db, "cart");
+      const q = query(
+        cartRef,
+        where("userId", "==", userId),
+        where("status", "==", "active")
+      );
+      const cartSnapshot = await getDocs(q);
+      let cartData: DocumentData = { items: [] }; // Initialize with default structure
+      // console.log("cartSnapshot: ", cartSnapshot);
+      if (!cartSnapshot.empty) {
+        const cartDoc = cartSnapshot.docs[0]; // Return the active cart
+
+        const cartId = cartDoc.id;
+        const cartDataRef = doc(db, "cart", cartId);
+        cartData = cartDoc.data();
+        console.log("cartData: ", cartData);
+        console.log("productData: ", productData);
+
+        // if active cart exists, check if product is already in cart.
+        // Check if item is already in cart
+        console.log(productData.id);
+        const existingItemIndex = cartData.items.findIndex(
+          (product: CartItem) => product.productId === item.id
+        );
+        // if an item exists, just update quantity and totalPrice
+        console.log("existingItemIndex: ", existingItemIndex);
+        if (existingItemIndex !== -1) {
+          console.log("Item already in cart, updating quantity: ", cartData);
+          console.log("cartData.items: ", cartData.items);
+          const updatedItems = cartData.items.map((cartItem: CartItem) => {
+            console.log("cartItem: ", cartItem);
+            return cartItem.productId === item.id
+              ? { ...cartItem, quantity: cartItem.quantity + 1 } // ✅ Now updates the correct item
+              : cartItem;
+          });
+
+          // update
+          const totalPrice = updatedItems.reduce(
+            (acc: number, cartItem: CartItem) =>
+              acc + cartItem.price * cartItem.quantity,
+            0
+          );
+          await updateDoc(cartDataRef, {
+            items: updatedItems,
+            totalPrice: totalPrice,
+            updatedAt: Timestamp.now(),
+          });
+
+          // console.log("Cart item quantity updated");
+        } else {
+          console.log("item not in cart");
+          // if item does not exist, add it to the cart
+          const updatedItems = [...cartData.items, cartNewData]; // ✅ Append new item
+          const totalPrice = updatedItems.reduce(
+            (acc: number, cartItem: CartItem) =>
+              acc + cartItem.price * cartItem.quantity,
+            0
+          );
+          console.log("new cart items: ", updatedItems);
+          await updateDoc(cartDataRef, {
+            items: updatedItems,
+            totalPrice: totalPrice,
+            updatedAt: Timestamp.now(),
+          });
+
+          // console.log("New cart item added");
+        }
+      } else {
+        // console.log("No active cart found for this user");
+
+        const newCart = {
+          items: [
+            {
+              name: productData.name,
+              price: productData.price,
+              imageUrl: productData.imageUrl,
+              quantity: 1,
+              productId: item.id,
+            },
+          ],
+          status: "active",
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+          totalPrice: productData.price,
+          userId,
+        };
+        // console.log("newCart: ", newCart);
+        await addDoc(cartRef, newCart);
+        // console.log("New cart created and item added");
+      }
+
+      // console.log("adding to cart in firestore");
+
+      // await setDoc(cartRef, updatedCartData, { merge: true });
 
       console.log("Cart saved successfully!");
+      return cartSnapshot.empty
+        ? [
+            {
+              name: item.name,
+              price: item.price,
+              imageUrl: item.imageUrl,
+              quantity: 1,
+              productId: item.id,
+            },
+          ]
+        : cartData?.items || []; // Safely handle undefined cartData
     } catch (error) {
       console.error("Error saving cart:", error);
     }
 
-    return updatedItems; // Return updated cart for Redux state
+    // return updatedItems; // Return updated cart for Redux state
   }
 );
 

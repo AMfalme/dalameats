@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/products";
@@ -5,8 +6,12 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/app/store/store";
 import { addItemToCart } from "@/app/store/features/cartSlice";
 import { useAuth } from "@/components/providers/auth-provider";
+import beefCategory from "@/static/img/beef steak.png";
 
-export function ProductCard(product: Product) {
+interface ProductCardProps {
+  product: Product;
+}
+export default function ProductCard({ product }: ProductCardProps) {
   const { user } = useAuth();
   const userId = user?.uid;
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +23,7 @@ export function ProductCard(product: Product) {
   };
   return (
     <div
-      key={product.id}
+      key={product.imageUrl}
       className="bg-background border border-border rounded-2xl shadow-md hover:shadow-lg transition p-4"
     >
       <Image

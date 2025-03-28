@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import logo from "@/static/img/dala_meats_logo.png";
-import beefCategory from "@/static/img/beef steak.png";
 import poultryCategory from "@/static/img/chicken big legs.png";
 import goatCategory from "@/static/img/goatmeat.png";
 import fishCategory from "@/static/img/tilapia.jpg";
