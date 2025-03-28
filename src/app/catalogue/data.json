@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": "1",
     "name": "Beef Steak",
     "price": "Ksh 1,200/kg",
     "imageUrl": "/img/beef steak.png",
@@ -13,7 +13,7 @@
     "unit": "kg"
   },
   {
-    "id": 2,
+    "id": "2",
     "name": "Beef Kidneys",
     "price": "Ksh 950/kg",
     "imageUrl": "/img/beef kidneys.png",
@@ -26,7 +26,7 @@
     "unit": "kg"
   },
   {
-    "id": 3,
+    "id": "3",
     "name": "Boneless chicken Breast",
     "price": "Ksh 1,200/kg",
     "imageUrl": "/img/boneless chicken breast.png",
@@ -39,7 +39,7 @@
     "unit": "kg"
   },
   {
-    "id": 4,
+    "id": "4",
     "name": "Chicken Big legs",
     "price": "Ksh 1,500/kg",
     "imageUrl": "/img/chicken big legs.png",
@@ -53,7 +53,7 @@
   },
 
   {
-    "id": 5,
+    "id": "5",
     "name": "Chicken Drumsticks",
     "price": "Ksh 1,200/kg",
     "imageUrl": "/img/chicken drumsticks.png",
@@ -66,7 +66,7 @@
     "unit": "kg"
   },
   {
-    "id": 6,
+    "id": "6",
     "name": "chicken gizzards",
     "price": "Ksh 100/kg",
     "imageUrl": "/img/chicken gizzards.png",
@@ -79,7 +79,7 @@
     "unit": "kg"
   },
   {
-    "id": 7,
+    "id": "7",
     "name": "full goat matumbo",
     "price": "Ksh 350/kg",
     "imageUrl": "/img/full goat matumbo.png",
@@ -92,7 +92,7 @@
     "unit": "kg"
   },
   {
-    "id": 8,
+    "id": "8",
     "name": "minced meat",
     "price": "Ksh 600/kg",
     "imageUrl": "/img/minced meat.png",
@@ -105,7 +105,7 @@
     "unit": "kg"
   },
   {
-    "id": 9,
+    "id": "9",
     "name": "nile perch",
     "price": "Ksh 1,500/kg",
     "imageUrl": "/img/nile perch fillets.png",
