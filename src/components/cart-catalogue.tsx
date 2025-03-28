@@ -2,8 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/store/store";
 
-import addItem from "@/app/store/features/cartSlice";
-import removeItem from "@/app/store/features/cartSlice";
+import { addItem, removeItem } from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -46,7 +45,7 @@ export function CartCatalogue() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => dispatch(removeItem(item.id))}
+                    onClick={() => dispatch(removeItem({ id: item.id }))}
                   >
                     -
                   </Button>
@@ -54,7 +53,7 @@ export function CartCatalogue() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => dispatch(addItem(item))}
+                    onClick={() => dispatch(addItem({ ...item }))}
                   >
                     +
                   </Button>
