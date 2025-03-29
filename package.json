@@ -5,11 +5,12 @@
   "homepage": "https://gitname.github.io/dalameats",
   "scripts": {
     "dev": "next dev --turbopack",
+    "export": "next export",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "predeploy": "npm run build",
-    "deploy": "CI=false npm run build && gh-pages -d build"
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
