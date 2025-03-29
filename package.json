@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "predeploy": "echo 'Skipping linting...'",
+    "predeploy": "npm run build",
     "deploy": "CI=false npm run build && gh-pages -d build"
   },
   "dependencies": {
