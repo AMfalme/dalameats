@@ -14,7 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { user } = useAuth();
   const userId = user?.uid;
   const dispatch = useDispatch<AppDispatch>();
-
+  //Hello Griffin
   const handleAddToCart = (item: Product) => {
     if (user && userId) {
       dispatch(addItemToCart({ userId: userId, item }));
