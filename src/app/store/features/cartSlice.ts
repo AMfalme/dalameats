@@ -163,8 +163,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     removeItem: (state, action) => {
-      const { itemId } = action.payload;
-      state.items = state.items.filter((item) => item.id !== itemId);
+      state.items = state.items.filter((item) => item.id !== action.payload);
     },
     updateCart: (state, action) => {
       state.items = action.payload;
@@ -181,6 +180,10 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.items = action.payload;
+        state.totalQuantity = action.payload.reduce(
+          (sum: number, item: CartItem) => sum + item.quantity,
+          0
+        );
         state.loading = false;
       })
       .addCase(fetchCartItems.rejected, (state, action) => {

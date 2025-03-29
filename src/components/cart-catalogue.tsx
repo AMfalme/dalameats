@@ -2,16 +2,24 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/store/store";
 
-import { addItem, removeItem } from "@/app/store/features/cartSlice";
+import { addItemToCart } from "@/app/store/features/cartSlice";
+// import removeItem from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import beefkidneys from "@/static/img/beef kidneys.png";
 import { CartItem } from "@/types/cart";
-
+import { useAuth } from "@/components/providers/auth-provider";
+import type { AppDispatch } from "@/app/store/store";
 export function CartCatalogue() {
-  const dispatch = useDispatch();
-
+  const { user } = useAuth();
+  const userId = user?.uid;
+  const dispatch = useDispatch<AppDispatch>();
+  const handleAddToCart = (item: CartItem) => {
+    if (user && userId) {
+      dispatch(addItemToCart({ userId: userId, item }));
+    }
+  };
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
@@ -45,7 +53,7 @@ export function CartCatalogue() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => dispatch(removeItem({ id: item.id }))}
+                    onClick={() => console.log("remove Item")}
                   >
                     -
                   </Button>
@@ -53,7 +61,7 @@ export function CartCatalogue() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => dispatch(addItem({ ...item }))}
+                    onClick={() => handleAddToCart(item)}
                   >
                     +
                   </Button>

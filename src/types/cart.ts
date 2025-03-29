@@ -22,4 +22,6 @@ export interface CartState {
   totalPrice: number;
   updatedAt: Timestamp;
   userId: string;
+  totalQuantity: 0;
+  loading: boolean;
 }
