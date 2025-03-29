@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
+module.exports = {
+  output: "standalone",
+};
 
 const nextConfig: NextConfig = {
   /* config options here */
   basePath: "/dalameats",
-  output: "export", // <=== enables static exports
   reactStrictMode: true,
 };
 

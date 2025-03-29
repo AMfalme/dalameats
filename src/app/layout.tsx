@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Dala Meats",
   description: "Vetter for quality and impact",
 };
+
+export const dynamic = "force-dynamic";
+
 import StoreProvider from "./store/StoreProvider";
 export default async function RootLayout({
   children,
