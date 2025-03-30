@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase/firestore";
-
+import { userDetails } from "./user";
 export interface CartItem {
   id: string;
   name: string;
@@ -17,11 +17,11 @@ export interface CartItem {
 
 export interface CartState {
   items: CartItem[];
-  status: "idle" | "active" | "completed";
+  status: "idle" | "active" | "completed" | "pending" | "archived";
   createdAt: Timestamp;
   totalPrice: number;
   updatedAt: Timestamp;
-  userId: string;
+  user: userDetails;
   totalQuantity: 0;
   loading: boolean;
 }

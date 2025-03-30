@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { Product } from "@/types/products";
-
+import { getUserDocumentByUID } from "@/lib/utils";
 const initialState: {
   items: CartItem[];
   totalQuantity: number;
@@ -30,10 +30,19 @@ const initialState: {
 };
 
 // Async thunk to fetch product details and add to cart
+
 export const addItemToCart = createAsyncThunk(
   "cart/addItem",
-  async ({ userId, item }: { userId: string; item: Product }) => {
+  async ({ uid, item }: { uid: string; item: { id: string } }) => {
     try {
+      // Fetch full user details from Firestore
+      const user = await getUserDocumentByUID(uid);
+      if (!user) {
+        return "user not known";
+      }
+
+      console.log("user data in addItemToCart: ", user);
+
       const productRef = doc(db, "products", item?.id);
       const productSnap = await getDoc(productRef);
 
@@ -41,6 +50,7 @@ export const addItemToCart = createAsyncThunk(
         throw new Error(`Product not found: ${item.id}`);
       }
       const productData = productSnap.data();
+
       const cartNewData = {
         name: productData.name,
         price: productData.price,
@@ -53,84 +63,63 @@ export const addItemToCart = createAsyncThunk(
       const cartRef = collection(db, "cart");
       const q = query(
         cartRef,
-        where("userId", "==", userId),
+        where("user.id", "==", user?.id),
         where("status", "==", "active")
       );
       const cartSnapshot = await getDocs(q);
-      let cartData: DocumentData = { items: [] }; // Initialize with default structure
-      // console.log("cartSnapshot: ", cartSnapshot);
-      if (!cartSnapshot.empty) {
-        const cartDoc = cartSnapshot.docs[0]; // Return the active cart
 
+      if (!cartSnapshot.empty) {
+        const cartDoc = cartSnapshot.docs[0];
         const cartId = cartDoc.id;
         const cartDataRef = doc(db, "cart", cartId);
-        cartData = cartDoc.data();
+        const cartData = cartDoc.data();
 
-        // ✅ Ensure `cartData.items` is always an array
-        const cartItems: CartItem[] = Array.isArray(cartData.items)
-          ? cartData.items
-          : [];
-        // ✅ Find existing item
-
+        const cartItems = Array.isArray(cartData.items) ? cartData.items : [];
         const existingItemIndex = cartItems.findIndex(
-          (product: CartItem) => product.productId === item.id
+          (cartItem) => cartItem.productId === item.id
         );
-        // if an item exists, just update quantity and totalPrice
-        console.log("existingItemIndex: ", existingItemIndex);
+
         let updatedItems;
         if (existingItemIndex !== -1) {
-          updatedItems = cartData.items.map((cartItem: CartItem) => {
-            console.log("cartItem: ", cartItem);
-            return cartItem.productId === item.id
-              ? { ...cartItem, quantity: cartItem.quantity + 1 } // ✅ Now updates the correct item
-              : cartItem;
-          });
-
-          // console.log("Cart item quantity updated");
+          updatedItems = cartItems.map((cartItem) =>
+            cartItem.productId === item.id
+              ? { ...cartItem, quantity: cartItem.quantity + 1 }
+              : cartItem
+          );
         } else {
-          updatedItems = [...cartData.items, cartNewData]; // ✅ Append new item
+          updatedItems = [...cartItems, cartNewData];
         }
-        // update
+
         const totalPrice = updatedItems.reduce(
-          (acc: number, cartItem: CartItem) =>
-            acc + cartItem.price * cartItem.quantity,
+          (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
           0
         );
+
         await updateDoc(cartDataRef, {
           items: updatedItems,
-          totalPrice: totalPrice,
+          totalPrice,
           updatedAt: Timestamp.now(),
         });
+
         return updatedItems;
       } else {
-        // console.log("No active cart found for this user");
-
+        // No active cart, create a new one
         const newCart = {
-          items: [
-            {
-              name: productData.name,
-              price: productData.price,
-              imageUrl: productData.imageUrl,
-              quantity: 1,
-              productId: item.id,
-            },
-          ],
+          items: [cartNewData],
           status: "active",
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
           totalPrice: productData.price,
-          userId,
+          user, // ✅ Store full user details here
         };
-        // console.log("newCart: ", newCart);
+
         await addDoc(cartRef, newCart);
         return [newCart];
-        // console.log("New cart created and item added");
       }
     } catch (error) {
       console.error("Error saving cart:", error);
+      throw error;
     }
-
-    // return updatedItems; // Return updated cart for Redux state
   }
 );
 

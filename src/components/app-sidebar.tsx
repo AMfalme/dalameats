@@ -42,6 +42,11 @@ const data = {
       icon: IconDashboard,
     },
     {
+      title: "Users",
+      url: "/dashboard/users",
+      icon: IconFolder,
+    },
+    {
       title: "Products",
       url: "/dashboard/products",
       icon: IconListDetails,
@@ -50,11 +55,6 @@ const data = {
       title: "User requests",
       url: "/dashboard/user-requests",
       icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
     },
     {
       title: "Team",
