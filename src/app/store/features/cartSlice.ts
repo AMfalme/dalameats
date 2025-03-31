@@ -1,7 +1,7 @@
 // redux/slices/cartSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { CartItem } from "@/types/cart";
+import { CartItem, CartState } from "@/types/cart";
 
 import { RootState } from "../store"; // Ensure you import RootState type
 import {
@@ -124,6 +124,58 @@ export const addItemToCart = createAsyncThunk(
   }
 );
 
+export const removeCartItem = createAsyncThunk(
+  "cart/removeCartItem",
+  async ({ userId, item }: { userId: string; item: { id: string } }) => {
+    const cartRef = collection(db, "cart");
+    const q = query(
+      cartRef,
+      where("user.id", "==", userId),
+      where("status", "==", "active")
+    );
+    const cartSnap = await getDocs(q);
+
+    if (!cartSnap.empty) {
+      const cartDoc = cartSnap.docs[0];
+      const cartId = cartDoc.id;
+      const cartDataRef = doc(db, "cart", cartId);
+
+      const cartData = cartDoc.data() as CartState;
+      console.log("cart found: ", cartData);
+
+      // Reduce quantity or remove item if quantity reaches 0
+      const updatedItems = cartData.items
+        .map((cartitem: CartItem) =>
+          cartitem.productId === item.id
+            ? { ...cartitem, quantity: cartitem.quantity - 1 }
+            : cartitem
+        )
+        .filter((item: CartItem) => item.quantity > 0);
+
+      // Recalculate totals
+      const totalQuantity = updatedItems.reduce(
+        (sum: number, item: CartItem) => sum + item.quantity,
+        0
+      );
+      const totalPrice = updatedItems.reduce(
+        (sum: number, item: CartItem) => sum + item.price * item.quantity,
+        0
+      );
+
+      // Update Firestore
+      await updateDoc(cartDataRef, {
+        items: updatedItems,
+        totalPrice,
+        totalQuantity,
+        updatedAt: new Date(),
+      });
+
+      return updatedItems;
+    } else {
+      console.log("cartItem not found");
+    }
+  }
+);
 export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId: string) => {
@@ -159,12 +211,13 @@ const cartSlice = createSlice({
         0
       );
     },
-    updateCart: (state, action) => {
+    updateCartState: (state, action) => {
       state.items = Array.isArray(action.payload) ? action.payload : [];
       state.totalQuantity = action.payload.reduce(
         (sum: number, item: CartItem) => sum + item.quantity,
         0
       );
+      // Object.assign(state, action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -198,12 +251,27 @@ const cartSlice = createSlice({
       .addCase(addItemToCart.rejected, (state, action) => {
         console.error("Error adding item:", action.error.message);
         state.loading = false;
+      })
+      .addCase(removeCartItem.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeCartItem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+        state.totalQuantity = action.payload.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+      })
+      .addCase(removeCartItem.rejected, (state) => {
+        state.loading = false;
       });
   },
 });
 
 // ✅ Export the reducer correctly
-export const { removeItem } = cartSlice.actions;
+export const { removeItem, updateCartState } = cartSlice.actions;
+
 export default cartSlice.reducer; // <-- This is the key export
 
 // Selector to compute totalCount dynamically

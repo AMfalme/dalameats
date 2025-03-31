@@ -5,8 +5,9 @@ import { Product } from "@/types/products";
 import { CartItem } from "@/types/cart";
 import { useAuth } from "../providers/auth-provider";
 import { useDispatch } from "react-redux";
-import { addItemToCart } from "@/app/store/features/cartSlice";
+import { addItemToCart, removeCartItem } from "@/app/store/features/cartSlice";
 import { AppDispatch } from "@/app/store/store";
+
 interface ProductQuantityCounterProps {
   item: CartItem;
 }
@@ -18,10 +19,18 @@ export default function ProductQuantityCounter({
 
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
-  const [count, setCount] = useState(0);
   const handleAddToCart = (item: CartItem) => {
     if (user && user?.uid) {
       dispatch(addItemToCart({ uid: user?.uid, item: { id: item.productId } }));
+    }
+  };
+
+  const handleRemoveFromCart = (item: CartItem) => {
+    if (user && user?.uid) {
+      console.log("We got here");
+      dispatch(
+        removeCartItem({ userId: user?.uid, item: { id: item.productId } })
+      );
     }
   };
   return (
@@ -30,7 +39,7 @@ export default function ProductQuantityCounter({
       <Button
         variant="outline"
         size="sm"
-        onClick={() => dispatch(removeItem({ itemId: item.id }))}
+        onClick={() => handleRemoveFromCart(item)}
       >
         -
       </Button>
