@@ -226,8 +226,8 @@ const cartSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.totalQuantity = action.payload.reduce(
+        state.items = action.payload || [];
+        state.totalQuantity = (action.payload ?? []).reduce(
           (sum, item) => sum + item.quantity,
           0
         );
@@ -241,7 +241,7 @@ const cartSlice = createSlice({
         state.loading = true;
       })
       .addCase(addItemToCart.fulfilled, (state, action) => {
-        state.items = action.payload;
+        state.items = action.payload || [];
         state.totalQuantity = action.payload.reduce(
           (sum, item) => sum + item.quantity,
           0
@@ -257,8 +257,8 @@ const cartSlice = createSlice({
       })
       .addCase(removeCartItem.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
-        state.totalQuantity = action.payload.reduce(
+        state.items = action.payload || [];
+        state.totalQuantity = (action.payload ?? []).reduce(
           (sum, item) => sum + item.quantity,
           0
         );

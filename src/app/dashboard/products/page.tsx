@@ -31,10 +31,10 @@ export default function AdminProductTable() {
     console.log(setProducts);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (id: string) => {
     if (editingId) {
       try {
-        console.log("we got here: ");
+        console.log("we got here: ", id);
 
         // const response = await fetch("/api/add-products", {
         //   method: "POST",
@@ -65,6 +65,11 @@ export default function AdminProductTable() {
     setEditedProduct((prev) => ({ ...prev, [field]: value }));
   };
 
+  function handleCheckboxChange(arg: string): void {
+    console.log(arg);
+    // throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Manage Products</h2>
@@ -90,34 +95,38 @@ export default function AdminProductTable() {
                   <TableCell>
                     <Input
                       value={editedProduct.name || ""}
-                      onChange={(e) => handleChange(e, "name")}
+                      onChange={(e) => handleChange(e, "name", e.target.value)}
                     />
                   </TableCell>
                   <TableCell>
                     <Input
                       type="string"
                       value={editedProduct.price || ""}
-                      onChange={(e) => handleChange(e, "price")}
+                      onChange={(e) => handleChange(e, "price", e.target.value)}
                     />
                   </TableCell>
                   <TableCell>
                     <Input
                       type="number"
                       value={editedProduct.stock || ""}
-                      onChange={(e) => handleChange(e, "stock")}
+                      onChange={(e) => handleChange(e, "stock", e.target.value)}
                     />
                   </TableCell>
                   <TableCell>
                     <Input
                       value={editedProduct.imageUrl || ""}
-                      onChange={(e) => handleChange(e, "imageUrl")}
+                      onChange={(e) =>
+                        handleChange(e, "imageUrl", e.target.value)
+                      }
                       placeholder="Image URL"
                     />
                   </TableCell>
                   <TableCell>
                     <Input
                       value={editedProduct.description || ""}
-                      onChange={(e) => handleChange(e, "description")}
+                      onChange={(e) =>
+                        handleChange(e, "description", e.target.value)
+                      }
                       placeholder="Description"
                     />
                   </TableCell>
@@ -133,14 +142,16 @@ export default function AdminProductTable() {
                     <Input
                       type="number"
                       value={editedProduct.salesCount || ""}
-                      onChange={(e) => handleChange(e, "salesCount")}
+                      onChange={(e) =>
+                        handleChange(e, "salesCount", e.target.value)
+                      }
                       placeholder="Sales Count"
                     />
                   </TableCell>
                   <TableCell>
                     <Input
                       value={editedProduct.unit || ""}
-                      onChange={(e) => handleChange(e, "unit")}
+                      onChange={(e) => handleChange(e, "unit", e.target.value)}
                       placeholder="Unit (kg, pcs, etc.)"
                     />
                   </TableCell>
@@ -153,7 +164,7 @@ export default function AdminProductTable() {
                     </Button>
                     <Button
                       variant="destructive"
-                      onClick={() => setEditId(null)}
+                      onClick={() => setEditingId(null)}
                     >
                       Cancel
                     </Button>

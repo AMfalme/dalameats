@@ -13,7 +13,7 @@ export function ProductCard(product: Product) {
 
   const handleAddToCart = (item: Product) => {
     if (user && userId) {
-      dispatch(addItemToCart({ userId: userId, item }));
+      dispatch(addItemToCart({ uid: userId, item }));
     }
   };
   return (

@@ -1,8 +1,4 @@
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  updateProfile,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import firebase_app from "../config";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../config";

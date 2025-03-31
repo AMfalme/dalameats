@@ -72,10 +72,12 @@ export default function AdminCarts() {
     setLoading(true);
 
     try {
-      await updateOrderStatus(selectedCart.id, "completed"); // Firestore update
+      await updateOrderStatus(selectedCart.status, "completed"); // Firestore update
       setCartStates((prev) =>
         prev.map((cart) =>
-          cart.id === selectedCart.id ? { ...cart, status: "completed" } : cart
+          cart.status === selectedCart.status
+            ? { ...cart, status: "completed" }
+            : cart
         )
       );
     } catch (error) {
@@ -107,8 +109,8 @@ export default function AdminCarts() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {cartStates.map((cart) => (
-              <TableRow key={cart.id}>
+            {cartStates.map((cart, i) => (
+              <TableRow key={cart.items[i].id}>
                 <TableCell>
                   {usersMap[cart.user.id]?.email || "Unknown User"}
                 </TableCell>

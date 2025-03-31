@@ -17,7 +17,7 @@ export function CartCatalogue() {
   const dispatch = useDispatch<AppDispatch>();
   const handleAddToCart = (item: CartItem) => {
     if (user && userId) {
-      dispatch(addItemToCart({ userId: userId, item }));
+      dispatch(addItemToCart({ uid: userId, item }));
     }
   };
   const cartItems: CartItem[] = useSelector(

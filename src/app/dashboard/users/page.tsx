@@ -17,7 +17,7 @@ import { userDetails } from "@/types/user";
 export default function UserList() {
   const [users, setUsers] = useState<userDetails[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<userDetails | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -34,19 +34,25 @@ export default function UserList() {
       user?.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleUpdateClick = (user) => {
+  const handleUpdateClick = (user: userDetails) => {
     setSelectedUser(user);
     setModalOpen(true);
   };
 
-  const handleInputChange = (e) => {
-    setSelectedUser({ ...selectedUser, [e.target.name]: e.target.value });
+  const handleInputChange = (e: {
+    target: { name: string; value: unknown };
+  }) => {
+    if (selectedUser) {
+      setSelectedUser({ ...selectedUser, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSave = async () => {
-    await updateUser(selectedUser);
-    setUsers(users.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
-    setModalOpen(false);
+    if (selectedUser) {
+      await updateUser(selectedUser);
+      setUsers(users.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
+      setModalOpen(false);
+    }
   };
   if (loading) return <p>Loading users...</p>;
   // if (!selectedUser) return null;
