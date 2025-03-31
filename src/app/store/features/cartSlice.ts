@@ -2,6 +2,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { CartItem } from "@/types/cart";
+
+import { RootState } from "../store"; // Ensure you import RootState type
 import {
   doc,
   getDoc,
@@ -12,17 +14,16 @@ import {
   updateDoc,
   Timestamp,
   addDoc,
-  DocumentData,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
-import { Product } from "@/types/products";
 import { getUserDocumentByUID } from "@/lib/utils";
-const initialState: {
+export interface CartStateDataType {
   items: CartItem[];
   totalQuantity: number;
   loading: boolean;
   totalPrice: number;
-} = {
+}
+const initialState: CartStateDataType = {
   items: [],
   totalQuantity: 0,
   loading: false,
@@ -38,7 +39,7 @@ export const addItemToCart = createAsyncThunk(
       // Fetch full user details from Firestore
       const user = await getUserDocumentByUID(uid);
       if (!user) {
-        return "user not known";
+        return [];
       }
 
       console.log("user data in addItemToCart: ", user);
@@ -130,7 +131,7 @@ export const fetchCartItems = createAsyncThunk(
       const cartRef = collection(db, "cart");
       const q = query(
         cartRef,
-        where("userId", "==", userId),
+        where("user.id", "==", userId),
         where("status", "==", "active")
       );
       const cartSnapshot = await getDocs(q);
@@ -153,9 +154,13 @@ const cartSlice = createSlice({
   reducers: {
     removeItem: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
+      state.totalQuantity = state.items.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+      );
     },
     updateCart: (state, action) => {
-      state.items = action.payload;
+      state.items = Array.isArray(action.payload) ? action.payload : [];
       state.totalQuantity = action.payload.reduce(
         (sum: number, item: CartItem) => sum + item.quantity,
         0
@@ -170,7 +175,7 @@ const cartSlice = createSlice({
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.items = action.payload;
         state.totalQuantity = action.payload.reduce(
-          (sum: number, item: CartItem) => sum + item.quantity,
+          (sum, item) => sum + item.quantity,
           0
         );
         state.loading = false;
@@ -182,6 +187,14 @@ const cartSlice = createSlice({
       .addCase(addItemToCart.pending, (state) => {
         state.loading = true;
       })
+      .addCase(addItemToCart.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.totalQuantity = action.payload.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+        state.loading = false;
+      })
       .addCase(addItemToCart.rejected, (state, action) => {
         console.error("Error adding item:", action.error.message);
         state.loading = false;
@@ -192,3 +205,7 @@ const cartSlice = createSlice({
 // ✅ Export the reducer correctly
 export const { removeItem } = cartSlice.actions;
 export default cartSlice.reducer; // <-- This is the key export
+
+// Selector to compute totalCount dynamically
+export const selectTotalCount = (state: RootState) =>
+  state.cart.items.reduce((sum, item) => sum + item.quantity, 0);

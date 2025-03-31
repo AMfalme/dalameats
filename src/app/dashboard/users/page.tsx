@@ -13,21 +13,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-
+import { userDetails } from "@/types/user";
 export default function UserList() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<userDetails[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUsers().then(setUsers);
+    fetchUsers()
+      .then((data) => setUsers(data || []))
+      .catch((err) => console.error("Error fetching users:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   const filteredUsers = users.filter(
     (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      user?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user?.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleUpdateClick = (user) => {
@@ -44,6 +48,8 @@ export default function UserList() {
     setUsers(users.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
     setModalOpen(false);
   };
+  if (loading) return <p>Loading users...</p>;
+  // if (!selectedUser) return null;
 
   return (
     <Card className="p-4 space-y-4">
@@ -53,6 +59,8 @@ export default function UserList() {
       <CardContent>
         <div className="flex justify-between mb-4">
           <Input
+            id="search-users"
+            type=""
             placeholder="Search users..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -93,8 +101,8 @@ export default function UserList() {
         </Table>
       </CardContent>
 
-      {modalOpen && (
-        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+      {modalOpen && selectedUser && (
+        <Dialog open={modalOpen} onOpenChange={() => setModalOpen(!modalOpen)}>
           <DialogContent>
             <DialogHeader>
               <h2 className="text-xl font-bold">Update User</h2>
