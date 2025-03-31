@@ -1,26 +1,23 @@
 "use client";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, store } from "@/app/store/store";
-
+import ProductQuantityCounter from "@/components/ui/product-counter";
 import { addItemToCart, removeItem } from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 // import { useAuth } from "@/components/providers/auth-provider";
 import { CartItem } from "@/types/cart";
+import { Product } from "@/types/products";
+import { useAuth } from "@/components/providers/auth-provider";
 export default function CartCatalogue() {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const dispatch = useDispatch<typeof store.dispatch>();
 
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
 
-  // const handleAddToCart = (item: CartItem) => {
-  //   if (user && user.uid) {
-  //     dispatch(addItemToCart({ userId: user.uid, item }));
-  //   }
-  // };
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -64,40 +61,7 @@ export default function CartCatalogue() {
                     </p>
                   </div>
 
-                  {/* Quantity Controls */}
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => dispatch(removeItem({ itemId: item.id }))}
-                    >
-                      -
-                    </Button>
-                    <span className="text-lg font-semibold">
-                      {item.quantity}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        dispatch(
-                          addItemToCart({
-                            userId: "your-user-id",
-                            item: {
-                              ...item,
-                              description: item.description || "",
-                              isAvailable: item.isAvailable || true,
-                              salesCount: item.salesCount || 0,
-                              stock: item.stock || 0,
-                              unit: item.unit || "unit",
-                            },
-                          })
-                        )
-                      }
-                    >
-                      +
-                    </Button>
-                  </div>
+                  <ProductQuantityCounter item={item} />
                 </CardContent>
               </Card>
             ))}

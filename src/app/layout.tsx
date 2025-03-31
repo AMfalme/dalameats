@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Dala Meats",
   description: "Vetter for quality and impact",
 };
+import ToastNotification from "@/components/ui/toastNotification";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,7 @@ export default async function RootLayout({
               <ActiveThemeProvider initialTheme={activeThemeValue}>
                 <Navbar />
                 {children}
+                <ToastNotification /> {/* ✅ Global notification handler */}
               </ActiveThemeProvider>
             </ThemeProvider>
           </AuthProvider>

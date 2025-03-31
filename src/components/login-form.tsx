@@ -10,7 +10,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LogInWithEmailAndPassword from "@/lib/firebase/auth/signin";
+import { useDispatch } from "react-redux";
 
+import { addNotification } from "@/app/store/features/notificationSlice";
+import { userDetails } from "@/types/user";
 export function LoginForm({
   className,
   ...props
@@ -18,21 +21,39 @@ export function LoginForm({
   const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log(user);
     const { result, error } = await LogInWithEmailAndPassword(
       useremail,
-      password
+      password,
+      dispatch
     );
     console.log("the following are the results", result, error);
+
+    if (result && result.user) {
+      console.log("result from sugnup", result, error);
+
+      dispatch(
+        addNotification({
+          type: "success",
+          message: "Successfully Logged in!",
+        })
+      );
+      return router.push("/dashboard");
+    }
+    console.log(error);
     if (error) {
-      //display notification on error
+      dispatch(
+        addNotification({
+          type: "error",
+          message: "An error occured!",
+        })
+      );
+
       return console.log(error);
-    } else {
-      //display success notification
-      return router.push("/catalogue");
     }
   };
 

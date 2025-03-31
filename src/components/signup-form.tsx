@@ -12,6 +12,8 @@ import signUp from "@/lib/firebase/auth/signup";
 import { useRouter } from "next/navigation";
 import { saveUserDetails } from "@/lib/firebase/auth/signup";
 import { userDetails } from "@/types/user";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/app/store/features/notificationSlice";
 export function SignUpForm({
   className,
   ...props
@@ -25,11 +27,13 @@ export function SignUpForm({
   const [address, setAddress] = useState("");
   const router = useRouter();
 
+  const dispatch = useDispatch();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(name, email, password, role, dob, phone, address);
 
-    const { result, error } = await signUp(email, password);
+    const { result, error } = await signUp(email, password, dispatch);
     if (result && result.user) {
       console.log("result from sugnup", result, error);
       const userData: userDetails = {
@@ -41,15 +45,29 @@ export function SignUpForm({
         address: address,
       };
       const { userInfo } = await saveUserDetails(result.user.uid, userData);
-      console.log(userInfo);
+      dispatch(
+        addNotification({
+          type: "success",
+          message: "Successfully created an account!",
+        })
+      );
+      return router.push("/login");
     }
+    console.log(error);
     if (error) {
+      dispatch(
+        addNotification({
+          type: "error",
+          message: "An error occured!",
+        })
+      );
+
       return console.log(error);
     }
 
     // else successful
-    console.log(result);
-    return router.push("/catalogue");
+    console.log(result, error);
+    // return router.push("/catalogue");
   };
 
   return (
