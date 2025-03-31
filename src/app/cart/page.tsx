@@ -1,19 +1,13 @@
 "use client";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, store } from "@/app/store/store";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 import ProductQuantityCounter from "@/components/ui/product-counter";
-import { addItemToCart, removeItem } from "@/app/store/features/cartSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 // import { useAuth } from "@/components/providers/auth-provider";
 import { CartItem } from "@/types/cart";
-import { Product } from "@/types/products";
-import { useAuth } from "@/components/providers/auth-provider";
 export default function CartCatalogue() {
-  const { user } = useAuth();
-  const dispatch = useDispatch<typeof store.dispatch>();
-
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
@@ -51,7 +45,8 @@ export default function CartCatalogue() {
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold">{item.name}</h3>
                     <p className="text-gray-600">
-                      ${item.price.toFixed(2)} each
+                      {item.unit}
+                      KSH {item.price.toFixed(2)} per {item.unit}
                     </p>
                     <p className="text-sm font-medium text-gray-700">
                       Total:{" "}

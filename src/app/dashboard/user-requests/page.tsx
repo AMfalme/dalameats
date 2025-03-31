@@ -26,18 +26,18 @@ import {
 } from "@/components/ui/dialog";
 import { userDetails } from "@/types/user";
 
-const statuses = [
-  "all",
-  "pending",
-  "archived",
-  "completed",
-  "wishlist",
-  "active",
-];
+// const statuses = [
+//   "all",
+//   "pending",
+//   "archived",
+//   "completed",
+//   "wishlist",
+//   "active",
+// ];
 
 export default function AdminCarts() {
   const [cartStates, setCartStates] = useState<CartState[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const selectedStatus = "all";
   const [usersMap, setUsersMap] = useState<Record<string, userDetails>>({});
   const [selectedCart, setSelectedCart] = useState<CartState | null>(null);
   const [loading, setLoading] = useState(false);

@@ -41,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       />
       <h3 className="mt-4 text-base font-bold">{product.name}</h3>
       <p className="text-muted-foreground text-xs">
-        {product.price} KSH per {product.unit}sub
+        {product.price} KSH per {product.unit}
       </p>
       <div className="mt-4 flex justify-between overflow-x-hidden whitespace-nowrap">
         <Button variant="outline" className="w-1/3 mr-2">
