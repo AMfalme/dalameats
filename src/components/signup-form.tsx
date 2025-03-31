@@ -21,8 +21,8 @@ export function SignUpForm({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
-  const [dob, setDob] = useState("");
+  const [role] = useState("");
+  const [dob] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const router = useRouter();
@@ -44,7 +44,7 @@ export function SignUpForm({
         phone: phone,
         address: address,
       };
-      const { userInfo } = await saveUserDetails(result.user.uid, userData);
+      await saveUserDetails(result.user.uid, userData);
       dispatch(
         addNotification({
           type: "success",

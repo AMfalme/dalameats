@@ -13,7 +13,6 @@ import LogInWithEmailAndPassword from "@/lib/firebase/auth/signin";
 import { useDispatch } from "react-redux";
 
 import { addNotification } from "@/app/store/features/notificationSlice";
-import { userDetails } from "@/types/user";
 export function LoginForm({
   className,
   ...props

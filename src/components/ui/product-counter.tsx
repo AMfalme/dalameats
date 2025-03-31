@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Product } from "@/types/products";
+
 import { CartItem } from "@/types/cart";
 import { useAuth } from "../providers/auth-provider";
 import { useDispatch } from "react-redux";
