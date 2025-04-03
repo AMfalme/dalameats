@@ -1,11 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "./ui/mode-toggle";
 import Link from "next/link";
 import { useAuth } from "./providers/auth-provider";
 import { usePathname } from "next/navigation";
-import { CartWidget } from "./ui/cartwidget";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../app/store/store";
 import Icon from "@/static/img/dala meats logo.jpeg";
@@ -41,7 +39,7 @@ export default function Navbar() {
           href="/catalogue"
           className={
             pathName == "/catalogue"
-              ? "text-sm font-medium hover:underline text-white bg-primary p-5"
+              ? "text-sm font-medium hover:underline rounded-full text-white bg-primary px-4 py-2"
               : "px-4 py-2 bg-blue-600 text-white rounded-full w-25 text-center hover:bg-white-700 transition text-sm font-medium hover:underline bg-primary text-white "
           }
         >
@@ -56,6 +54,7 @@ export default function Navbar() {
         <Link href="/dashboard" className="text-sm font-medium hover:underline">
           Dashboard
         </Link>
+
         {user ? (
           <UserMenu />
         ) : (
@@ -63,7 +62,6 @@ export default function Navbar() {
             <Button variant="outline">Login</Button>
           </Link>
         )}
-        <CartWidget />
       </div>
     </nav>
   );

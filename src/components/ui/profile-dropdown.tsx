@@ -7,8 +7,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, User, Palette } from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 import { getAuth, signOut } from "firebase/auth";
+import Link from "next/link";
 
 export default function UserMenu() {
   const auth = getAuth();
@@ -21,16 +22,16 @@ export default function UserMenu() {
 
       <DropdownMenuContent align="end" className="mt-5 w-40">
         <DropdownMenuItem>
-          <User className="w-4 h-4 mr-2" />
-          Dashboard
+          <Link href="/dashboard" className="flex items-center">
+            <User className="w-4 h-4 mr-2" />
+            profile
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Settings className="w-4 h-4 mr-2" />
-          Settings
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Palette className="w-4 h-4 mr-2" />
-          UI Theme
+          <Link href="/dashboard" className="flex items-center">
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="text-red-600">
           <Button

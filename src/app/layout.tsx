@@ -15,6 +15,7 @@ import ToastNotification from "@/components/ui/toastNotification";
 export const dynamic = "force-dynamic";
 
 import StoreProvider from "./store/StoreProvider";
+import SlidingCart from "@/components/sidebar-checkout";
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -45,6 +46,7 @@ export default async function RootLayout({
                 <Navbar />
                 {children}
                 <ToastNotification /> {/* ✅ Global notification handler */}
+                <SlidingCart />
               </ActiveThemeProvider>
             </ThemeProvider>
           </AuthProvider>

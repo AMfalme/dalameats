@@ -1,7 +1,6 @@
 import { FunctionComponent } from "react";
 
 // import classes from "./cart-widget.module.scss";
-import { useRouter } from "next/navigation";
 // import { useSelector } from "react-redux";
 // import { RootState } from "../store/store";
 
@@ -25,14 +24,9 @@ export const CartWidget: FunctionComponent = () => {
   // const cartItemsLength = cartItems.length;
   const totalCount = useSelector(selectTotalCount);
 
-  const navigate = useRouter();
-  const navigateToCart = () => {
-    navigate.push("/cart");
-  };
-
   return (
-    <button onClick={navigateToCart} className="flex fex-row text-red">
-      <TbBasketDown className="basket-icon" />
+    <button className="flex fex-row text-red fixed rounded-full w-15 fs-5 h-15 content-center text-center top-50 bg-amber-500 right-4 z-50">
+      <TbBasketDown className="basket-icon text-white text-center text-lg mt-4 m-auto ml-4" />
       <span className="product-icon">{totalCount}</span>
     </button>
   );

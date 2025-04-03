@@ -1,19 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Card, CardContent } from "@/components/ui/card";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Autoplay from "embla-carousel-autoplay";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { MapPin, Mail, Phone } from "lucide-react";
+import { ChangeEventHandler, FormEventHandler } from "react";
 
 import {
-  FaShoppingCart,
   FaFacebook,
   FaInstagram,
-  FaTag,
   FaTwitter,
   FaQuoteLeft,
 } from "react-icons/fa";
@@ -21,7 +19,7 @@ import {
 import Image from "next/image";
 import heroImage from "@/static/img/hero.png";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import pork from "@/static/img/chicken big legs.png";
 import beef from "@/static/img/beef steak.png";
 import goat from "@/static/img/goat matumbo 2.png";
@@ -58,14 +56,23 @@ export default function Home() {
     email: "",
     message: "",
   });
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange: ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault(); // Ensure the form doesn't reload the page
     alert("Message sent successfully!");
-    setFormData({ name: "", email: "", message: "" });
+    setFormData({
+      ...formData,
+      [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement)
+        .value,
+    });
   };
 
   const meatCategories = [
@@ -117,7 +124,10 @@ export default function Home() {
             Kenya.
           </p>
           <div className="mt-6 flex gap-4">
-            <Button className="px-6 py-5 text-lg bg-primary hover:bg-red-700 rounded-full">
+            <Button
+              className="px-6 py-5 text-lg bg-primary hover:bg-red-700 rounded-full"
+              onClick={handleRedirect}
+            >
               Shop Now
             </Button>
             <Button className="px-6 py-5 rounded-full bg-transparent border border-white-500 text-white-500 hover:bg-gray-100">
@@ -306,7 +316,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-green-600">Contact Us</h2>
           <p className="text-lg text-gray-600 mt-2">
-            Have questions? Reach out and we'll respond ASAP!
+            {`Have questions? Reach out and we'll respond ASAP!`}
           </p>
         </div>
 
@@ -340,7 +350,7 @@ export default function Home() {
               value={formData.message}
               onChange={handleChange}
               placeholder="Your Message"
-              rows="4"
+              rows={4}
               required
             />
           </div>
