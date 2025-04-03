@@ -1,5 +1,5 @@
 // redux/slices/cartSlice.ts
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 import { CartItem, CartState } from "@/types/cart";
 
@@ -23,15 +23,18 @@ export interface CartStateDataType {
   loading: boolean;
   totalPrice: number;
 }
+
+// Async thunk to fetch product details and add to cart
+const loadCartFromLocalStorage = (): CartItem[] => {
+  const cartData = localStorage.getItem("cart");
+  return cartData ? JSON.parse(cartData) : [];
+};
 const initialState: CartStateDataType = {
-  items: [],
+  items: loadCartFromLocalStorage(),
   totalQuantity: 0,
   loading: false,
   totalPrice: 0,
 };
-
-// Async thunk to fetch product details and add to cart
-
 export const addItemToCart = createAsyncThunk(
   "cart/addItem",
   async ({ uid, item }: { uid: string; item: { id: string } }) => {
@@ -204,12 +207,39 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    setCart(state, action: PayloadAction<CartItem[]>) {
+      console.log("before :  ", state.items);
+      state.items = action.payload;
+
+      console.log("after: ", state.items);
+    },
     removeItem: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
       state.totalQuantity = state.items.reduce(
         (sum, item) => sum + item.quantity,
         0
       );
+    },
+    addItem: (state, action) => {
+      console.log("before :  ", state.items);
+
+      const existingItemIndex = state.items.findIndex(
+        (item) => item.id === action.payload.id
+      );
+
+      if (existingItemIndex !== -1) {
+        // Create a new array to ensure reactivity
+        state.items = state.items.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        state.items.push({ ...action.payload, quantity: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(state.items));
+      console.log("after: ", state.items);
     },
     updateCartState: (state, action) => {
       state.items = Array.isArray(action.payload) ? action.payload : [];
@@ -270,7 +300,8 @@ const cartSlice = createSlice({
 });
 
 // ✅ Export the reducer correctly
-export const { removeItem, updateCartState } = cartSlice.actions;
+export const { setCart, removeItem, updateCartState, addItem } =
+  cartSlice.actions;
 
 export default cartSlice.reducer; // <-- This is the key export
 

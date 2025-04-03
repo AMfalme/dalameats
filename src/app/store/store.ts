@@ -8,6 +8,7 @@ export const store = configureStore({
     cart: cartReducer,
     notification: notificationReducer, // ✅ Add the notification slice
   },
+  devTools: process.env.NODE_ENV !== "production", // Enable dev tools in development mode
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

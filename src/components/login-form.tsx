@@ -11,17 +11,19 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LogInWithEmailAndPassword from "@/lib/firebase/auth/signin";
 import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/app/store/store";
 
 import { addNotification } from "@/app/store/features/notificationSlice";
+import { addItemToCart } from "@/app/store/features/cartSlice";
+import { Product } from "@/types/products";
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const dispatch = useDispatch();
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log(user);
@@ -41,6 +43,13 @@ export function LoginForm({
           message: "Successfully Logged in!",
         })
       );
+      const cartFromLocalStorage = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+      );
+      cartFromLocalStorage.forEach((item: Product) => {
+        return dispatch(addItemToCart({ uid: result.user.uid, item }));
+      });
+      localStorage.removeItem("cart"); // Clear localStorage after syncing
       return router.push("/dashboard");
     }
     console.log(error);

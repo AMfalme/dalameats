@@ -70,7 +70,7 @@ export default function CartCatalogue() {
         <p className="text-lg font-semibold">
           Total: <span className="text-blue-600">KSH {totalPrice}</span>
         </p>
-        <Button className="w-full mt-4">Proceed to Checkout</Button>
+        <Button className="w-full mt-4">Make order now!</Button>
       </div>
     </div>
   );

@@ -220,7 +220,7 @@ export default function Home() {
         Our Best Selections
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-9/10 mt-5 mb-20 m-auto">
-        {products.slice(0, 9).map((product) => (
+        {products.slice(0, 6).map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

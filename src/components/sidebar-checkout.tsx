@@ -14,13 +14,14 @@ import { useRouter } from "next/navigation";
 
 export default function SlidingCart() {
   const navigate = useRouter();
-  const navigateToCart = () => {
-    navigate.push("/cart");
-  };
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalCount = useSelector(selectTotalCount);
+  const navigateToCart = () => {
+    navigate.push("/cart");
+    setOpen(!open);
+  };
 
   return (
     <div>
@@ -29,7 +30,7 @@ export default function SlidingCart() {
         variant="outline"
         className={` ${
           open ? "left-4" : "fixed right-4"
-        } top-20 z-50 bg-amber-500 text-red rounded-full w-15 h-15 flex items-center justify-center transition-all`}
+        } top-30 z-50 bg-amber-500 text-red rounded-full w-15 h-15 flex items-center justify-center transition-all`}
         onClick={() => setOpen(!open)}
       >
         <div className="relative">
