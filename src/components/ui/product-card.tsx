@@ -44,14 +44,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         {product.price} KSH per {product.unit}
       </p>
       <div className="mt-4 flex justify-between overflow-x-hidden whitespace-nowrap">
-        <Button variant="outline" className="w-1/3 mr-2">
+        <Button variant="outline" className="w-1/3 mr-2 rounded-full">
           View Details
         </Button>
         {productCartItem ? (
           <ProductQuantityCounter item={productCartItem} />
         ) : (
           <Button
-            className="w-1/3 ml-2"
+            className="w-1/3 ml-2 rounded-full"
             onClick={() => handleAddToCart(product)}
           >
             Add to Cart

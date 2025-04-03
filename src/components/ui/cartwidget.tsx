@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 // import { useSelector } from "react-redux";
 // import { RootState } from "../store/store";
 
-import { IconShoppingCart } from "@tabler/icons-react";
+import { TbBasketDown } from "react-icons/tb";
 
 // interface CartItem {
 //   id: number;
@@ -32,7 +32,7 @@ export const CartWidget: FunctionComponent = () => {
 
   return (
     <button onClick={navigateToCart} className="flex fex-row text-red">
-      <IconShoppingCart />
+      <TbBasketDown className="basket-icon" />
       <span className="product-icon">{totalCount}</span>
     </button>
   );
