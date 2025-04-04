@@ -8,7 +8,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { MapPin, Mail, Phone } from "lucide-react";
 import { ChangeEventHandler, FormEventHandler } from "react";
-
+import { useInitCartFromLocalStorage } from "@/hooks/useInitCartFromLocalStorage";
 import {
   FaFacebook,
   FaInstagram,
@@ -47,6 +47,7 @@ import { Product } from "@/types/products";
 
 export default function Home() {
   const router = useRouter();
+  useInitCartFromLocalStorage();
   const handleRedirect = () => {
     router.push("/catalogue");
   };
