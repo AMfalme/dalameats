@@ -24,13 +24,8 @@ export interface CartStateDataType {
   totalPrice: number;
 }
 
-// Async thunk to fetch product details and add to cart
-const loadCartFromLocalStorage = (): CartItem[] => {
-  const cartData = localStorage.getItem("cart");
-  return cartData ? JSON.parse(cartData) : [];
-};
 const initialState: CartStateDataType = {
-  items: loadCartFromLocalStorage(),
+  items: [],
   totalQuantity: 0,
   loading: false,
   totalPrice: 0,
@@ -226,20 +221,7 @@ const cartSlice = createSlice({
       const existingItemIndex = state.items.findIndex(
         (item) => item.id === action.payload.id
       );
-
-      if (existingItemIndex !== -1) {
-        // Create a new array to ensure reactivity
-        state.items = state.items.map((item, index) =>
-          index === existingItemIndex
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        state.items.push({ ...action.payload, quantity: 1 });
-      }
-
-      localStorage.setItem("cart", JSON.stringify(state.items));
-      console.log("after: ", state.items);
+      console.log(existingItemIndex);
     },
     updateCartState: (state, action) => {
       state.items = Array.isArray(action.payload) ? action.payload : [];
@@ -247,7 +229,6 @@ const cartSlice = createSlice({
         (sum: number, item: CartItem) => sum + item.quantity,
         0
       );
-      // Object.assign(state, action.payload);
     },
   },
   extraReducers: (builder) => {

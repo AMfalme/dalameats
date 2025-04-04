@@ -18,10 +18,6 @@ import { selectTotalCount } from "@/app/store/features/cartSlice";
 import { useSelector } from "react-redux";
 
 export const CartWidget: FunctionComponent = () => {
-  // const cartItems: CartItem[] = useSelector(
-  //   (state: RootState) => state.cart.items
-  // );
-  // const cartItemsLength = cartItems.length;
   const totalCount = useSelector(selectTotalCount);
 
   return (
