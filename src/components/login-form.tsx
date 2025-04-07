@@ -10,6 +10,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LogInWithEmailAndPassword from "@/lib/firebase/auth/signin";
+import { signInWithGoogle } from "@/lib/firebase/auth/googleSignIn";
+
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/app/store/store";
 
@@ -24,6 +26,21 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const handleGoogleLogin = async () => {
+    const { result, error } = await signInWithGoogle();
+
+    if (result && result.user) {
+      dispatch(
+        addNotification({
+          type: "success",
+          message: "Logged in with Google!",
+        })
+      );
+      // You can also sync the cart or any other logic here like you did above
+      return router.push("/dashboard");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log(user);
@@ -113,7 +130,12 @@ export function LoginForm({
                 </span>
               </div>
               <div className="grid">
-                <Button variant="outline" type="button" className="w-full">
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="w-full"
+                  onClick={handleGoogleLogin}
+                >
                   <svg
                     viewBox="-3 0 262 262"
                     xmlns="http://www.w3.org/2000/svg"
@@ -149,9 +171,8 @@ export function LoginForm({
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
                 <Link href="/signup" className="underline underline-offset-4">
-                  Sign up
+                  Don&apos;t have an account? Sign up
                 </Link>
               </div>
             </div>

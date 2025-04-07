@@ -6,16 +6,34 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 // import { useAuth } from "@/components/providers/auth-provider";
+import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cart";
+// import { ChangeEventHandler } from "react";
+import { useDispatch } from "react-redux";
+// const dispatch = useDispatch<AppDispatch>();
+import { addNotification } from "@/app/store/features/notificationSlice";
+import type { AppDispatch } from "@/app/store/store";
+
+import { FormEventHandler } from "react";
 export default function CartCatalogue() {
+  const dispatch = useDispatch<AppDispatch>();
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
-
+  const router = useRouter();
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    dispatch(
+      addNotification({
+        type: "success",
+        message: "Your order has been recieved. We will call you back!",
+      })
+    );
+    router.push("/");
+  };
 
   // const total = cartItems.length;
 
@@ -70,7 +88,9 @@ export default function CartCatalogue() {
         <p className="text-lg font-semibold">
           Total: <span className="text-blue-600">KSH {totalPrice}</span>
         </p>
-        <Button className="w-full mt-4">Make order now!</Button>
+        <Button className="w-full mt-4" onClick={handleSubmit}>
+          Make order now!
+        </Button>
       </div>
     </div>
   );

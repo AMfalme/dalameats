@@ -8,7 +8,8 @@ import { cookies } from "next/headers";
 import Navbar from "@/components/navbar";
 export const metadata: Metadata = {
   title: "Dala Meats",
-  description: "Vetter for quality and impact",
+  description:
+    "Enjoy premium meats with convenience, affordability, and guaranteed freshness.",
 };
 import ToastNotification from "@/components/ui/toastNotification";
 

@@ -203,10 +203,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     setCart(state, action: PayloadAction<CartItem[]>) {
-      console.log("before :  ", state.items);
       state.items = action.payload;
-
-      console.log("after: ", state.items);
     },
     removeItem: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
@@ -216,8 +213,6 @@ const cartSlice = createSlice({
       );
     },
     addItem: (state, action) => {
-      console.log("before :  ", state.items);
-
       const existingItemIndex = state.items.findIndex(
         (item) => item.id === action.payload.id
       );
