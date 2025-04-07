@@ -17,8 +17,6 @@ import {
 } from "react-icons/fa";
 
 import Image from "next/image";
-import heroImage from "@/static/img/hero.png";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import pork from "@/static/img/chicken big legs.png";
 import beef from "@/static/img/beef steak.png";
@@ -44,13 +42,11 @@ import { TbBasketDown } from "react-icons/tb";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // Adjust the path as needed
 import { Product } from "@/types/products";
+import HeroSection from "../components/hero-section";
 
 export default function Home() {
-  const router = useRouter();
   useInitCartFromLocalStorage();
-  const handleRedirect = () => {
-    router.push("/catalogue");
-  };
+
   const [products, setProducts] = useState<Product[]>([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -113,41 +109,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative w-9/10 m-auto mt-5 h-screen flex items-center hero">
-        {/* Left Content with Translucent Background */}
-        <div className="absolute inset-y-0 left-0 w-1/2 flex flex-col justify-center px-8 md:px-16 text-white z-10 rounded-r-lg py-10">
-          <h3 className="text-4xl md:text-5xl font-extrabold drop-shadow-xl leading-tight">
-            Premium <span className="text-primary ">Meat</span>, Freshly
-            Delivered to Your Doorstep!
-          </h3>
-          <p className="mt-4 text-lg md:text-2xl font-light drop-shadow-lg">
-            Quality Beef, Mutton & Chicken sourced from the finest farms in
-            Kenya.
-          </p>
-          <div className="mt-6 flex gap-4">
-            <Button
-              className="px-6 py-5 text-lg bg-primary hover:bg-red-700 rounded-full"
-              onClick={handleRedirect}
-            >
-              Shop Now
-            </Button>
-            <Button className="px-6 py-5 rounded-full bg-transparent border border-white-500 text-white-500 hover:bg-gray-100">
-              Learn more
-            </Button>
-          </div>
-        </div>
-
-        {/* Background Image with Gradient */}
-        <div className="absolute inset-0 rounded-md">
-          <div className="rounded-md absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"></div>
-          <Image
-            src={heroImage}
-            alt="Fresh Meat Selection"
-            fill
-            className="object-cover rounded-md"
-          />
-        </div>
-      </div>
+      <HeroSection />
       <section className="relative w-3/4 mt-20 m-auto">
         <h2 className="text-xl font-semibold text-left mb-8">Our Categories</h2>
         <Carousel

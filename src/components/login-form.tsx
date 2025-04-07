@@ -27,7 +27,7 @@ export function LoginForm({
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const handleGoogleLogin = async () => {
-    const { result, error } = await signInWithGoogle();
+    const { result } = await signInWithGoogle();
 
     if (result && result.user) {
       dispatch(

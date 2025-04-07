@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import type { AppDispatch } from "@/app/store/store";
 
-import { FormEventHandler } from "react";
+// import { FormEventHandler } from "react";
 export default function CartCatalogue() {
   const dispatch = useDispatch<AppDispatch>();
   const cartItems: CartItem[] = useSelector(
@@ -25,7 +25,7 @@ export default function CartCatalogue() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit = () => {
     dispatch(
       addNotification({
         type: "success",
