@@ -27,13 +27,14 @@ export function LoginForm() {
     console.log("I am here!!!!!!!");
     const { result } = await signInWithGoogle();
     console.log(result);
-    // if (result && result.user) {
-    //   dispatch(
-    //     addNotification({
-    //       type: "success",
-    //       message: "Logged in with Google!",
-    //     })
-    //   );
+    if (result && result.user) {
+      dispatch(
+        addNotification({
+          type: "success",
+          message: "Logged in with Google!",
+        })
+      );
+    }
     // You can also sync the cart or any other logic here like you did above
     return router.push("/cart");
   };
