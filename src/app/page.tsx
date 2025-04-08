@@ -110,6 +110,24 @@ export default function Home() {
     <main className="min-h-screen">
       {/* Hero Section */}
       <HeroSection />
+      <section className="w-9/10 relative mt-5 m-auto bg-gradient-to-r from-green-500 to-green-700 text-white py-16 px-10">
+        <div className="container mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-4">
+            Fresh. Premium. Delivered to You.
+          </h2>
+          <p className="text-xl mb-6">
+            Discover the finest selection of meats at Dalameats. From grass-fed
+            beef to organic chicken, we offer premium cuts delivered right to
+            your door. Enjoy the taste of quality in every bite!
+          </p>
+          <a
+            href="/cart"
+            className="inline-block bg-white text-green-700 px-8 py-3 rounded-full text-lg font-semibold transition duration-300 hover:bg-green-600 hover:text-white"
+          >
+            Start Shopping Now
+          </a>
+        </div>
+      </section>
       <section className="relative w-3/4 mt-20 m-auto">
         <h2 className="text-xl font-semibold text-left mb-8">Our Categories</h2>
         <Carousel
@@ -160,24 +178,7 @@ export default function Home() {
           Place Your Order
         </Button>
       </section>
-      <section className="w-9/10 relative mt-5 m-auto bg-gradient-to-r from-green-500 to-green-700 text-white py-16 px-10">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Fresh. Premium. Delivered to You.
-          </h2>
-          <p className="text-xl mb-6">
-            Discover the finest selection of meats at Dalameats. From grass-fed
-            beef to organic chicken, we offer premium cuts delivered right to
-            your door. Enjoy the taste of quality in every bite!
-          </p>
-          <a
-            href="/cart"
-            className="inline-block bg-white text-green-700 px-8 py-3 rounded-full text-lg font-semibold transition duration-300 hover:bg-green-600 hover:text-white"
-          >
-            Start Shopping Now
-          </a>
-        </div>
-      </section>
+
       {/* Featured Products */}
       <h2 className="text-3xl font-bold text-left mb-8 w-9/10 mt-20 mb-20 m-auto">
         Our Best Selections
@@ -244,16 +245,12 @@ export default function Home() {
 
           <div className="mt-6 space-y-4 text-gray-700">
             <p className="flex items-center justify-center gap-2 mb-10">
-              <MapPin className="w-6 h-6 text-green-600" />
-              <span>123 Meat Street, Nairobi, Kenya</span>
-            </p>
-            <p className="flex items-center justify-center gap-2 mb-10">
               <Phone className="w-6 h-6 text-green-600" />
-              <span>+254 700 123 456</span>
+              <span>+254 717 416898</span>
             </p>
             <p className="flex items-center justify-center gap-2 mb-10">
               <Mail className="w-6 h-6 text-green-600" />
-              <span>info@dalameats.co.ke</span>
+              <span>michaelomoshe@gmail.com</span>
             </p>
           </div>
         </div>
@@ -276,7 +273,7 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="max-w-4xl mx-auto text-center">
+        {/* <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-green-600">Contact Us</h2>
           <p className="text-lg text-gray-600 mt-2">
             {`Have questions? Reach out and we'll respond ASAP!`}
@@ -323,7 +320,7 @@ export default function Home() {
           >
             Send Message
           </Button>
-        </form>
+        </form> */}
 
         {/* How to Get to Us Section */}
       </section>
