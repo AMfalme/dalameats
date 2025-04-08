@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Autoplay from "embla-carousel-autoplay";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
-import { MapPin, Mail, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { ChangeEventHandler, FormEventHandler } from "react";
 import { useInitCartFromLocalStorage } from "@/hooks/useInitCartFromLocalStorage";
 import {
@@ -273,7 +273,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-green-600">Contact Us</h2>
           <p className="text-lg text-gray-600 mt-2">
             {`Have questions? Reach out and we'll respond ASAP!`}
@@ -320,7 +320,7 @@ export default function Home() {
           >
             Send Message
           </Button>
-        </form> */}
+        </form>
 
         {/* How to Get to Us Section */}
       </section>
