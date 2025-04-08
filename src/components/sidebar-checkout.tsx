@@ -61,7 +61,7 @@ export default function SlidingCart() {
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/register">
+                <Link href="/signup">
                   <Button variant="outline" className="w-full">
                     Register
                   </Button>
