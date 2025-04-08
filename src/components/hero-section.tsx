@@ -45,7 +45,7 @@ const HeroSection: React.FC = () => {
             className="px-6 py-5 text-lg bg-primary hover:bg-red-700 rounded-full"
             href="/catalogue"
           >
-            <p>{homepage?.ctaButton}</p>
+            <p>Shop Now</p>
           </Link>
           <Button className="px-6 py-5 rounded-full bg-transparent border border-white-500 text-white-500 hover:bg-gray-100">
             Learn more
