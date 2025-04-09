@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider"; // adjust if different
 import { getUserDocumentByUID } from "@/lib/utils";
+import logo from "@/static/img/dala meats logo.jpeg";
 
 type HeroHomepageType = {
   ctaButton: string;
@@ -73,7 +74,7 @@ const HeroSection: React.FC = () => {
   return (
     <div className="relative w-9/10 m-auto mt-5 h-screen flex items-center hero">
       {/* Left Content */}
-      <div className="absolute inset-y-0 left-0 w-1/2 flex flex-col justify-center px-8 md:px-16 text-white z-10 rounded-r-lg py-10">
+      <div className="space-between absolute inset-y-0 left-0 w-1/2 flex flex-col justify-center px-8 md:px-16 text-white z-10 rounded-r-lg py-10">
         <h3 className="text-4xl md:text-5xl font-extrabold drop-shadow-xl leading-tight">
           Premium <span className="text-primary">Meat</span>, Freshly Delivered
           to Your Doorstep!
@@ -161,6 +162,17 @@ const HeroSection: React.FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Right Content for Logo */}
+      <div className="absolute inset-y-0 right-0 w-1/2 flex items-center justify-center z-10">
+        <Image
+          src={logo}
+          alt="Brand Logo"
+          width={160}
+          height={160}
+          className="object-contain rounded-lg shadow-lg"
+        />
       </div>
 
       {/* Background Image */}

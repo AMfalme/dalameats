@@ -15,6 +15,7 @@ import {
   FaTwitter,
   FaQuoteLeft,
 } from "react-icons/fa";
+
 import { addNotification } from "@/app/store/features/notificationSlice";
 
 import Image from "next/image";
@@ -162,8 +163,8 @@ export default function Home() {
                     <Image
                       src={meat.image}
                       alt={meat.name}
-                      width={200}
-                      height={200}
+                      width={500}
+                      height={500}
                       className="object-cover"
                     />
                   </Card>
