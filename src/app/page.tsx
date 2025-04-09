@@ -19,14 +19,13 @@ import { addNotification } from "@/app/store/features/notificationSlice";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import pork from "@/static/img/chicken big legs.png";
 import beef from "@/static/img/beef steak.png";
 import goat from "@/static/img/goat matumbo 2.png";
+
+import matumbo from "@/static/img/matumbo.jpeg";
 import chicken from "@/static/img/chicken big legs.png";
 import mutton from "@/static/img/mutton.png";
 import lamb from "@/static/img/goat liver.png";
-import duck from "@/static/img/chicken drumsticks.png";
-import turkey from "@/static/img/chicken gizzards.png";
 import {
   Carousel,
   CarouselContent,
@@ -94,6 +93,7 @@ export default function Home() {
     { name: "Chicken", image: chicken },
     { name: "Lamb", image: lamb },
     { name: "Goat Meat", image: goat },
+    { name: "Matumbo", image: matumbo },
   ];
   useEffect(() => {
     const fetchProducts = async () => {
