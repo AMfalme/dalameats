@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-// import { fetchProducts, updateProduct } from "@/utils/firestore";
+import { getProducts, updateProduct, deleteProduct } from "@/lib/products";
 import data from "@/app/catalogue/data.json";
 import {
   Table,
@@ -14,16 +14,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/products";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+
 export default function AdminProductTable() {
-  const [products, setProducts] = useState<Product[]>(data);
+  const [products, setProducts] = useState<Product[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedProduct, setEditedProduct] = useState<Partial<Product>>({});
 
-  // useEffect(() => {
-  //   fetchProducts().then(setProducts);
-  // }, []);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsData = await getProducts();
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleEdit = (product: Product) => {
     setEditingId(product.id);
@@ -31,29 +41,27 @@ export default function AdminProductTable() {
     console.log(setProducts);
   };
 
-  const handleSave = async (id: string) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSave = async () => {
     if (editingId) {
       try {
-        console.log("we got here: ", id);
-
-        // const response = await fetch("/api/add-products", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(data as Product[]),
-        // });
-
-        // // console.log("response: ", response);
-
-        // const responseData = await response.json();
-        // console.log("responseData: ", responseData);
+        setIsLoading(true); // Show loading indicator
+        const currentProduct = products.find((p) => p.id === editingId);
+        if (currentProduct) {
+          await updateProduct(editingId, editedProduct, currentProduct);
+          setProducts((prev) =>
+            prev.map((p) =>
+              p.id === editingId ? { ...p, ...editedProduct } : p
+            )
+          );
+          setEditingId(null);
+        }
       } catch (error) {
-        console.error("Error loading cart:", error);
+        console.error("Error saving product:", error);
+      } finally {
+        setIsLoading(false); // Hide loading indicator
       }
-      // await updateProduct(editingId, editedProduct);
-      // setProducts((prev) =>
-      //   prev.map((p) => (p.id === editingId ? { ...p, ...editedProduct } : p))
-      // );
-      setEditingId(null);
     }
   };
 
@@ -63,6 +71,16 @@ export default function AdminProductTable() {
     value: string | number
   ) => {
     setEditedProduct((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Handle the delete action
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteProduct(id); // Call deleteProduct to delete the product
+      setProducts((prev) => prev.filter((product) => product.id !== id)); // Remove the deleted product from state
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
   function handleCheckboxChange(arg: string): void {
@@ -77,7 +95,7 @@ export default function AdminProductTable() {
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Price ($)</TableHead>
+            <TableHead>Price (KSH)</TableHead>
             <TableHead>Stock</TableHead>
             <TableHead>Image</TableHead>
             <TableHead>Description</TableHead>
@@ -88,8 +106,10 @@ export default function AdminProductTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
+          {products.map((product, index) => (
+            <TableRow key={`${product.id}-${index}`}>
+              {" "}
+              {/* Combine id with index */}
               {editingId === product.id ? (
                 <>
                   <TableCell>
@@ -173,7 +193,7 @@ export default function AdminProductTable() {
               ) : (
                 <>
                   <TableCell>{product.name}</TableCell>
-                  <TableCell>${product.price}</TableCell>
+                  <TableCell>KSH {product.price}</TableCell>
                   <TableCell>{product.stock}</TableCell>
                   <TableCell>
                     {product.imageUrl ? (
@@ -192,8 +212,14 @@ export default function AdminProductTable() {
                   <TableCell>{product.isAvailable ? "✅" : "❌"}</TableCell>
                   <TableCell>{product.salesCount}</TableCell>
                   <TableCell>{product.unit}</TableCell>
-                  <TableCell>
+                  <TableCell className="flex gap-2">
                     <Button onClick={() => handleEdit(product)}>Edit</Button>
+                    <Button
+                      variant="destructive"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 </>
               )}

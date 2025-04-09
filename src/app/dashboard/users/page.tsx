@@ -14,12 +14,27 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { userDetails } from "@/types/user";
+import { useAuth } from "@/components/providers/auth-provider"; // adjust if different
+import { getUserDocumentByUID } from "@/lib/utils";
+
 export default function UserList() {
   const [users, setUsers] = useState<userDetails[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<userDetails | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { user } = useAuth(); // Fetch logged-in user
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user?.uid) {
+        const userDoc = await getUserDocumentByUID(user.uid);
+        setIsAdmin(userDoc?.role === "admin");
+      }
+    };
+    fetchUserRole();
+  }, [user]);
 
   useEffect(() => {
     fetchUsers()
@@ -49,13 +64,17 @@ export default function UserList() {
 
   const handleSave = async () => {
     if (selectedUser) {
-      await updateUser(selectedUser);
+      // If the user is an admin, only the role will be updated
+      if (selectedUser?.role === "admin") {
+        await updateUser(selectedUser);
+      }
+
       setUsers(users.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
       setModalOpen(false);
     }
   };
+
   if (loading) return <p>Loading users...</p>;
-  // if (!selectedUser) return null;
 
   return (
     <Card className="p-4 space-y-4">
@@ -117,39 +136,48 @@ export default function UserList() {
               <Input
                 name="name"
                 value={selectedUser.name}
-                onChange={handleInputChange}
                 placeholder="Name"
+                disabled
               />
               <Input
                 name="email"
                 value={selectedUser.email}
-                onChange={handleInputChange}
                 placeholder="Email"
-              />
-              <Input
-                name="role"
-                value={selectedUser.role}
-                onChange={handleInputChange}
-                placeholder="Role"
+                disabled
               />
               <Input
                 name="dob"
                 value={selectedUser.dob}
-                onChange={handleInputChange}
                 placeholder="DOB"
+                disabled
               />
               <Input
                 name="phone"
                 value={selectedUser.phone}
-                onChange={handleInputChange}
                 placeholder="Phone"
+                disabled
               />
               <Input
                 name="address"
                 value={selectedUser.address}
-                onChange={handleInputChange}
                 placeholder="Address"
+                disabled
               />
+              {isAdmin && (
+                <div>
+                  <label htmlFor="role">Role</label>
+                  <select
+                    name="role"
+                    value={selectedUser.role}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border"
+                  >
+                    <option value="customer">Customer</option>
+                    <option value="admin">Admin</option>
+                    <option value="rider">Rider</option>
+                  </select>
+                </div>
+              )}
             </div>
             <div className="flex justify-end space-x-2 mt-4">
               <Button variant="secondary" onClick={() => setModalOpen(false)}>
