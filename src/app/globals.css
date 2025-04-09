@@ -258,7 +258,18 @@ a {
 Button {
   cursor: pointer;
 }
-
+.whatsapp-button {
+  background-color: #25d366;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  position: fixed;
+  bottom: 15px;
+  right: 10px;
+}
 .hero::after {
   background: rgb(36, 29, 0);
   background: -moz-linear-gradient(
