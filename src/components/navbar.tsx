@@ -51,15 +51,22 @@ export default function Navbar() {
         <Link href="#contact" className="text-sm font-medium hover:underline">
           Contact
         </Link>
-        <Link href="/dashboard" className="text-sm font-medium hover:underline">
-          Dashboard
-        </Link>
+        {user?.uid ? (
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium hover:underline"
+          >
+            Dashboard
+          </Link>
+        ) : (
+          ""
+        )}
 
         {user ? (
           <UserMenu />
         ) : (
           <Link href="/login" className="text-sm font-medium hover:underline">
-            <Button variant="outline">Login</Button>
+            <Button variant="outline">Sign in</Button>
           </Link>
         )}
       </div>

@@ -24,7 +24,7 @@ export function LoginForm() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const handleGoogleLogin = async () => {
-    console.log("I am here!!!!!!!");
+    // console.log("I am here!!!!!!!");
     const { result } = await signInWithGoogle();
     console.log(result);
     if (result && result.user) {
@@ -34,9 +34,18 @@ export function LoginForm() {
           message: "Logged in with Google!",
         })
       );
+      return router.push("/cart");
     }
+    console.log("I am here!!!!!!!");
+    dispatch(
+      addNotification({
+        type: "info",
+        message:
+          "Unable to signin, Please check your internet access and try again.",
+      })
+    );
+
     // You can also sync the cart or any other logic here like you did above
-    return router.push("/cart");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

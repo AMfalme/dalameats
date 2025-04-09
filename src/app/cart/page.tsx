@@ -5,16 +5,12 @@ import ProductQuantityCounter from "@/components/ui/product-counter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-// import { useAuth } from "@/components/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cart";
-// import { ChangeEventHandler } from "react";
 import { useDispatch } from "react-redux";
-// const dispatch = useDispatch<AppDispatch>();
 import { addNotification } from "@/app/store/features/notificationSlice";
 import type { AppDispatch } from "@/app/store/store";
 
-// import { FormEventHandler } from "react";
 export default function CartCatalogue() {
   const dispatch = useDispatch<AppDispatch>();
   const cartItems: CartItem[] = useSelector(
@@ -44,7 +40,10 @@ export default function CartCatalogue() {
         <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
 
         {cartItems.length === 0 ? (
-          <p className="text-gray-500 text-center py-4">No items in cart.</p>
+          <div className="flex flex-col">
+            <p className="text-gray-500 text-center py-4">No items in cart.</p>
+            <h2 className="text-xl font-bold mb-4">Add to Cart</h2>
+          </div>
         ) : (
           <div className="space-y-4">
             {cartItems.map((item) => (

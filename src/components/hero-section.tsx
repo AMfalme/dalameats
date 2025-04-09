@@ -14,10 +14,13 @@ type HeroHomepageType = {
   link: string;
 };
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 const HeroSection: React.FC = () => {
+  const router = useRouter();
+  const handleRedirect = () => {
+    router.push("/catalogue");
+  };
   const [homepage, setHomepage] = useState<HeroHomepageType | null>(null);
-
   useEffect(() => {
     const fetchHomepage = async () => {
       const docRef = doc(db, "homepage", "banner");
@@ -41,14 +44,14 @@ const HeroSection: React.FC = () => {
           {homepage?.title}
         </p>
         <div className="mt-6 flex gap-4">
-          <Link
+          <Button
             className="px-6 py-5 text-lg bg-primary hover:bg-red-700 rounded-full"
-            href="/catalogue"
+            onClick={handleRedirect}
           >
-            <p>Shop Now</p>
-          </Link>
+            {homepage?.ctaButton}
+          </Button>
           <Button className="px-6 py-5 rounded-full bg-transparent border border-white-500 text-white-500 hover:bg-gray-100">
-            Learn more
+            Call us: +254 717 416898
           </Button>
         </div>
       </div>

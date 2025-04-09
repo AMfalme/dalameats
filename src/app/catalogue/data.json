@@ -92,19 +92,6 @@
     "unit": "kg"
   },
   {
-    "id": "8",
-    "name": "minced meat",
-    "price": 600,
-    "imageUrl": "/img/minced meat.png",
-    "quantity": 0,
-    "category": "beef",
-    "description": "How are you",
-    "isAvailable": true,
-    "salesCount": 400,
-    "stock": 1000,
-    "unit": "kg"
-  },
-  {
     "id": "9",
     "name": "nile perch",
     "price": 1500,

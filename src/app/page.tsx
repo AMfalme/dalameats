@@ -15,6 +15,7 @@ import {
   FaTwitter,
   FaQuoteLeft,
 } from "react-icons/fa";
+import { addNotification } from "@/app/store/features/notificationSlice";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -34,6 +35,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { PiMoneyWavyLight } from "react-icons/pi";
+import { useDispatch } from "react-redux";
 
 import { getProducts } from "@/lib/products";
 import ProductCard from "@/components/ui/product-card"; // Adjust the path as needed
@@ -43,8 +45,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // Adjust the path as needed
 import { Product } from "@/types/products";
 import HeroSection from "../components/hero-section";
+import { useRouter } from "next/navigation";
+import type { AppDispatch } from "@/app/store/store";
 
 export default function Home() {
+  const dispatch = useDispatch<AppDispatch>();
+
   useInitCartFromLocalStorage();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -71,7 +77,17 @@ export default function Home() {
         .value,
     });
   };
-
+  const router = useRouter();
+  const handleRedirect = () => {
+    dispatch(
+      addNotification({
+        type: "success",
+        message: "Your order has been recieved. We will call you back!",
+      })
+    );
+    router.push("/");
+    router.push("/catalogue");
+  };
   const meatCategories = [
     { name: "Beef", image: beef },
     { name: "Mutton", image: mutton },
@@ -102,7 +118,7 @@ export default function Home() {
         "Their service is fast, and the meat is always fresh. I love the convenience!",
     },
     {
-      name: "Brian Otieno",
+      name: "Irvin Owino",
       review: "Best prices and top-notch quality. My go-to meat supplier!",
     },
   ];
@@ -121,7 +137,7 @@ export default function Home() {
             your door. Enjoy the taste of quality in every bite!
           </p>
           <a
-            href="/cart"
+            href="/catalogue"
             className="inline-block bg-white text-green-700 px-8 py-3 rounded-full text-lg font-semibold transition duration-300 hover:bg-green-600 hover:text-white"
           >
             Start Shopping Now
@@ -174,7 +190,10 @@ export default function Home() {
           mutton, and chicken, ensuring freshness and unbeatable value—delivered
           right to your doorstep.
         </p>
-        <Button className="mt-6 px-6 py-6 text-lg rounded-full">
+        <Button
+          className="mt-6 px-6 py-6 text-lg rounded-full"
+          onClick={handleRedirect}
+        >
           Place Your Order
         </Button>
       </section>
@@ -381,7 +400,7 @@ export default function Home() {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white">
+                <a href="/catalogue" className="hover:text-white">
                   Shop
                 </a>
               </li>
