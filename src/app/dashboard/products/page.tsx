@@ -49,7 +49,7 @@ export default function AdminProductTable() {
         setIsLoading(true); // Show loading indicator
         const currentProduct = products.find((p) => p.id === editingId);
         if (currentProduct) {
-          await updateProduct(editingId, editedProduct, currentProduct);
+          await updateProduct(editingId, editedProduct);
           setProducts((prev) =>
             prev.map((p) =>
               p.id === editingId ? { ...p, ...editedProduct } : p
@@ -180,7 +180,7 @@ export default function AdminProductTable() {
                       onClick={() => handleSave(product.id)}
                       className="bg-green-600"
                     >
-                      Save
+                      {isLoading ? <p>Loading</p> : <p>Save</p>}
                     </Button>
                     <Button
                       variant="destructive"
