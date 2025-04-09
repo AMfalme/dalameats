@@ -34,6 +34,9 @@ import { userDetails } from "@/types/user";
 //   "wishlist",
 //   "active",
 // ];
+import { useRouter } from "next/navigation";
+
+const router = useRouter();
 
 export default function AdminCarts() {
   const [cartStates, setCartStates] = useState<CartState[]>([]);
@@ -51,7 +54,7 @@ export default function AdminCarts() {
   useEffect(() => {
     const fetchUsers = async () => {
       const userIds = [...new Set(cartStates.map((cart) => cart.user.id))];
-      const usersData = awaituser Promise.all(
+      const usersData = await Promise.all(
         userIds.map(async (userId) => {
           const user = await fetchUserById(userId);
           console.log("user details in user requests: ", user);
@@ -66,10 +69,12 @@ export default function AdminCarts() {
       fetchUsers();
     }
   }, [cartStates]);
-  const handleRedirect = () => {
-    router.push("/catalogue");
-  };
-  if (user.role !== "admin") {return null}
+  // const handleRedirect = () => {
+  //   router.push("/catalogue");
+  // };
+  // if (user.role !== "admin") {
+  //   return null;
+  // }
   const handleCompleteOrder = async () => {
     if (!selectedCart) return;
     setLoading(true);
