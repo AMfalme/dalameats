@@ -92,10 +92,7 @@ export default function Home() {
     { name: "Beef", image: beef },
     { name: "Mutton", image: mutton },
     { name: "Chicken", image: chicken },
-    { name: "Pork", image: pork },
     { name: "Lamb", image: lamb },
-    { name: "Duck", image: duck },
-    { name: "Turkey", image: turkey },
     { name: "Goat Meat", image: goat },
   ];
   useEffect(() => {
