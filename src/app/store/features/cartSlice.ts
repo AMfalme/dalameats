@@ -6,7 +6,6 @@ import { CartItem, CartState } from "@/types/cart";
 import { RootState } from "../store"; // Ensure you import RootState type
 import {
   doc,
-  getDoc,
   where,
   query,
   collection,
@@ -17,7 +16,6 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { getUserDocumentByUID } from "@/lib/utils";
-import { getProducts } from "@/lib/products";
 export interface CartStateDataType {
   items: CartItem[];
   totalQuantity: number;
@@ -43,8 +41,6 @@ export const addItemToCart = createAsyncThunk(
 
       console.log("user data in addItemToCart: ", user);
 
-      const allProducts = getProducts();
-      console.log("allProducts: ", allProducts, "item?.id: ", item?.id);
       const productQuery = query(
         collection(db, "products"),
         where("id", "==", item?.id)
@@ -56,15 +52,25 @@ export const addItemToCart = createAsyncThunk(
         throw new Error(`Product not found: ${item?.id}`);
       }
 
-      let productData;
+      let productData:
+        | { name: string; price: number; imageUrl: string }
+        | undefined;
       productSnap.forEach((doc) => {
-        productData = doc.data(); // gets the first matching doc
+        productData = doc.data() as {
+          name: string;
+          price: number;
+          imageUrl: string;
+        }; // gets the first matching doc
       });
 
       console.log("Product found:", productData);
 
       const cartNewData = {
-        name: productData.name,
+        name:
+          productData?.name ??
+          (() => {
+            throw new Error("Product data is undefined");
+          })(),
         price: productData.price,
         quantity: 1,
         imageUrl: productData.imageUrl,
