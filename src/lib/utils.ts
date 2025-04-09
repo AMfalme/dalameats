@@ -33,7 +33,10 @@ export async function getUserDocumentByUID(uid: string) {
 
   if (!querySnapshot.empty) {
     const userDoc = querySnapshot.docs[0];
-    return { id: userDoc.id, ...userDoc.data() };
+    return { id: userDoc.id, ...userDoc.data() } as {
+      id: string;
+      role?: string;
+    };
   } else {
     console.log("User not found in Firestore.");
     return null;
