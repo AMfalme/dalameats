@@ -155,7 +155,7 @@ const HeroSection: React.FC = () => {
                   onClick={() => setEditing(true)}
                   className="bg-yellow-600 hover:bg-yellow-700"
                 >
-                  Edit Now
+                  Edit this section
                 </Button>
               )}
             </div>

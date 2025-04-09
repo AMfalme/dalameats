@@ -18,6 +18,8 @@ import type { AppDispatch } from "@/app/store/store";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import { addItemToCart } from "@/app/store/features/cartSlice";
 import { Product } from "@/types/products";
+import { saveUserDetails } from "@/lib/firebase/auth/signup";
+import { userDetails } from "@/types/user";
 export function LoginForm() {
   const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,6 +36,15 @@ export function LoginForm() {
           message: "Logged in with Google!",
         })
       );
+      const userData: userDetails = {
+        id: result.user.uid,
+        name: result.user?.email?.split("@")[0] || "",
+        role: "customer",
+        email: result.user?.email ?? "",
+        phone: "",
+        address: "",
+      };
+      saveUserDetails(result?.user.uid, userData);
       return router.push("/cart");
     }
     console.log("I am here!!!!!!!");
