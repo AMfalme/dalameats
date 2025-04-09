@@ -34,9 +34,9 @@ import { userDetails } from "@/types/user";
 //   "wishlist",
 //   "active",
 // ];
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
-const router = useRouter();
+// const router = useRouter();
 
 export default function AdminCarts() {
   const [cartStates, setCartStates] = useState<CartState[]>([]);

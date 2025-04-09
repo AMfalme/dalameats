@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "lucide-react";
+// import { Link } from "lucide-react";
 import React from "react";
 
 import heroImage from "@/static/img/hero.png";
