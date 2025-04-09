@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { getUserDocumentByUID } from "@/lib/utils";
+import { getProducts } from "@/lib/products";
 export interface CartStateDataType {
   items: CartItem[];
   totalQuantity: number;
@@ -42,13 +43,25 @@ export const addItemToCart = createAsyncThunk(
 
       console.log("user data in addItemToCart: ", user);
 
-      const productRef = doc(db, "products", item?.id);
-      const productSnap = await getDoc(productRef);
+      const allProducts = getProducts();
+      console.log("allProducts: ", allProducts, "item?.id: ", item?.id);
+      const productQuery = query(
+        collection(db, "products"),
+        where("id", "==", item?.id)
+      );
 
-      if (!productSnap.exists()) {
-        throw new Error(`Product not found: ${item.id}`);
+      const productSnap = await getDocs(productQuery);
+
+      if (productSnap.empty) {
+        throw new Error(`Product not found: ${item?.id}`);
       }
-      const productData = productSnap.data();
+
+      let productData;
+      productSnap.forEach((doc) => {
+        productData = doc.data(); // gets the first matching doc
+      });
+
+      console.log("Product found:", productData);
 
       const cartNewData = {
         name: productData.name,
@@ -60,14 +73,17 @@ export const addItemToCart = createAsyncThunk(
 
       // Check for active cart
       const cartRef = collection(db, "cart");
-      const q = query(
+      const cartQuery = query(
         cartRef,
         where("user.id", "==", user?.id),
         where("status", "==", "active")
       );
-      const cartSnapshot = await getDocs(q);
-
+      const cartSnapshot = await getDocs(cartQuery);
+      console.log("cartSnapshot: ", cartSnapshot);
       if (!cartSnapshot.empty) {
+        console.log(
+          "seems the logged in user already has this item in cart, adding plus product first"
+        );
         const cartDoc = cartSnapshot.docs[0];
         const cartId = cartDoc.id;
         const cartDataRef = doc(db, "cart", cartId);
@@ -103,6 +119,9 @@ export const addItemToCart = createAsyncThunk(
         return updatedItems;
       } else {
         // No active cart, create a new one
+        console.log(
+          "seems the logged in user doesn't have this in cart, adding the product first"
+        );
         const newCart = {
           items: [cartNewData],
           status: "active",
