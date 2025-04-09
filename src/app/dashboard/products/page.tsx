@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { getProducts, updateProduct, deleteProduct } from "@/lib/products";
-import data from "@/app/catalogue/data.json";
+
 import {
   Table,
   TableBody,
@@ -176,10 +176,7 @@ export default function AdminProductTable() {
                     />
                   </TableCell>
                   <TableCell className="flex gap-2">
-                    <Button
-                      onClick={() => handleSave(product.id)}
-                      className="bg-green-600"
-                    >
+                    <Button onClick={handleSave} className="bg-green-600">
                       {isLoading ? <p>Loading</p> : <p>Save</p>}
                     </Button>
                     <Button
