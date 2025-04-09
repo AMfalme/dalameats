@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider"; // adjust if different
 import { getUserDocumentByUID } from "@/lib/utils";
-import logo from "@/static/img/dala meats logo.jpeg";
+import logo from "@/static/img/dala_meats_logo.png";
 
 type HeroHomepageType = {
   ctaButton: string;
@@ -169,8 +169,8 @@ const HeroSection: React.FC = () => {
         <Image
           src={logo}
           alt="Brand Logo"
-          width={160}
-          height={160}
+          width={360}
+          height={360}
           className="object-contain rounded-lg shadow-lg"
         />
       </div>
