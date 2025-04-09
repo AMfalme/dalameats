@@ -21,14 +21,13 @@ export async function getProducts(): Promise<Product[]> {
 }
 export async function updateProduct(
   editingId: string,
-  editedProduct: Partial<Product>,
-  product: Product
+  editedProduct: Partial<Product>
 ): Promise<void> {
   try {
     const productRef = doc(db, "products", editingId); // Make sure you're using the right doc reference
 
     // Exclude the `id` from the data to prevent it from being updated
-    const { id, ...productData } = editedProduct;
+    const { ...productData } = editedProduct;
 
     // Update the document in Firestore
     await updateDoc(productRef, productData);
