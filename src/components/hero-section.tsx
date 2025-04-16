@@ -72,9 +72,9 @@ const HeroSection: React.FC = () => {
   }
 
   return (
-    <div className="relative w-9/10 m-auto mt-5 h-screen hidden sm:flex items-center hero">
+    <div className="relative w-11/12 m-auto mt-5 min-h-screen sm:hidden flex flex-col items-center hero">
       {/* Left Content */}
-      <div className="space-between absolute inset-y-0 left-0 w-1/2 flex flex-col justify-center px-8 md:px-16 text-white z-10 rounded-r-lg py-10">
+      <div className="w-full flex flex-col justify-center px-6 text-white z-10 py-10 sm:absolute sm:inset-y-0 sm:left-0 sm:w-1/2 sm:px-8 md:px-16 sm:rounded-r-lg">
         <h3 className="text-4xl md:text-5xl font-extrabold drop-shadow-xl leading-tight">
           Premium <span className="text-primary">Meat</span>, Freshly Delivered
           to Your Doorstep!
@@ -93,10 +93,9 @@ const HeroSection: React.FC = () => {
             {homepage?.title}
           </p>
         )}
-
-        <div className="mt-6 flex gap-4">
+        <div className="mt-6 flex flex-col sm:flex-row gap-4 w-full">
           <Button
-            className="px-6 py-5 text-lg bg-primary hover:bg-red-700 rounded-full"
+            className="w-full sm:w-auto px-6 py-5 text-lg bg-primary hover:bg-red-700 rounded-full"
             onClick={handleRedirect}
             disabled={!homepage?.ctaButton}
           >
@@ -119,7 +118,7 @@ const HeroSection: React.FC = () => {
               }
             />
           ) : (
-            <Button className="px-6 py-5 rounded-full bg-transparent border border-white-500 text-white-500 hover:bg-gray-100">
+            <Button className="w-full sm:w-auto px-6 py-5 rounded-full bg-transparent border border-white-500 text-white-500 hover:bg-gray-100">
               {!homepage?.ctaButton2 ? (
                 <>
                   <Loader2 className="animate-spin w-5 h-5" />
@@ -137,7 +136,7 @@ const HeroSection: React.FC = () => {
                 <>
                   <Button
                     onClick={saveChanges}
-                    className="bg-green-600 hover:bg-green-700"
+                    className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
                   >
                     Save
                   </Button>
@@ -146,7 +145,7 @@ const HeroSection: React.FC = () => {
                       setEditing(false);
                       setTempData(homepage); // reset
                     }}
-                    className="bg-gray-600 hover:bg-gray-700"
+                    className="w-full sm:w-auto bg-gray-600 hover:bg-gray-700"
                   >
                     Cancel
                   </Button>
@@ -154,7 +153,7 @@ const HeroSection: React.FC = () => {
               ) : (
                 <Button
                   onClick={() => setEditing(true)}
-                  className="bg-yellow-600 hover:bg-yellow-700"
+                  className="w-full sm:w-auto bg-yellow-600 hover:bg-yellow-700"
                 >
                   Edit this section
                 </Button>
