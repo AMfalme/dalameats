@@ -136,7 +136,7 @@ export default function Home() {
           </p>
           <a
             href="/catalogue"
-            className="inline-block bg-white text-green-700 px-8 py-3 rounded-full text-lg font-semibold transition duration-300 hover:bg-green-600 hover:text-white"
+            className="block w-full sm:inline-block sm:w-auto bg-white text-green-700 sm:px-8 py-3 rounded-full text-lg font-semibold transition duration-300 hover:bg-green-600 hover:text-white"
           >
             Start Shopping Now
           </a>
