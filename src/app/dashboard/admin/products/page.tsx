@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { getProducts, updateProduct, deleteProduct } from "@/lib/products";
-
 import {
   Table,
   TableBody,
@@ -16,12 +15,33 @@ import { Button } from "@/components/ui/button";
 import { Product } from "@/types/products";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/components/providers/auth-provider"; // adjust if different
+import { getUserDocumentByUID } from "@/lib/utils";
+
+// Replace with your authentication logic to get the current user's role
+const getCurrentUserRole = () => {
+  // This is a placeholder. Replace with actual role fetching logic.
+  return "admin"; // Possible values: "admin", "customer", "rider"
+};
 
 export default function AdminProductTable() {
   const [products, setProducts] = useState<Product[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedProduct, setEditedProduct] = useState<Partial<Product>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  const userRole = getCurrentUserRole(); // Fetch the current user's role
+  const user = useAuth();
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user?.uid) {
+        const userDoc = await getUserDocumentByUID(user.uid);
+        setIsAdmin(userDoc?.role === "admin");
+      }
+    };
+    fetchUserRole();
+  }, [user]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -38,10 +58,7 @@ export default function AdminProductTable() {
   const handleEdit = (product: Product) => {
     setEditingId(product.id);
     setEditedProduct({ ...product });
-    console.log(setProducts);
   };
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
     if (editingId) {
@@ -65,15 +82,6 @@ export default function AdminProductTable() {
     }
   };
 
-  const handleChange = (
-    _e: ChangeEvent<HTMLInputElement>,
-    field: keyof Product,
-    value: string | number
-  ) => {
-    setEditedProduct((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Handle the delete action
   const handleDelete = async (id: string) => {
     try {
       await deleteProduct(id); // Call deleteProduct to delete the product
@@ -83,9 +91,16 @@ export default function AdminProductTable() {
     }
   };
 
+  const handleChange = (
+    _e: ChangeEvent<HTMLInputElement>,
+    field: keyof Product,
+    value: string | number
+  ) => {
+    setEditedProduct((prev) => ({ ...prev, [field]: value }));
+  };
+
   function handleCheckboxChange(arg: string): void {
     console.log(arg);
-    // throw new Error("Function not implemented.");
   }
 
   return (
@@ -108,8 +123,6 @@ export default function AdminProductTable() {
         <TableBody>
           {products.map((product, index) => (
             <TableRow key={`${product.id}-${index}`}>
-              {" "}
-              {/* Combine id with index */}
               {editingId === product.id ? (
                 <>
                   <TableCell>
@@ -210,13 +223,19 @@ export default function AdminProductTable() {
                   <TableCell>{product.salesCount}</TableCell>
                   <TableCell>{product.unit}</TableCell>
                   <TableCell className="flex gap-2">
-                    <Button onClick={() => handleEdit(product)}>Edit</Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      Delete
-                    </Button>
+                    {userRole === "admin" && (
+                      <>
+                        <Button onClick={() => handleEdit(product)}>
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleDelete(product.id)}
+                        >
+                          Delete
+                        </Button>
+                      </>
+                    )}
                   </TableCell>
                 </>
               )}

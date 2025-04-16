@@ -72,7 +72,7 @@ const HeroSection: React.FC = () => {
   }
 
   return (
-    <div className="relative w-9/10 m-auto mt-5 h-screen flex items-center hero">
+    <div className="relative w-9/10 m-auto mt-5 h-screen hidden sm:flex items-center hero">
       {/* Left Content */}
       <div className="space-between absolute inset-y-0 left-0 w-1/2 flex flex-col justify-center px-8 md:px-16 text-white z-10 rounded-r-lg py-10">
         <h3 className="text-4xl md:text-5xl font-extrabold drop-shadow-xl leading-tight">
@@ -89,7 +89,7 @@ const HeroSection: React.FC = () => {
             }
           />
         ) : (
-          <p className="mt-4 text-lg md:text-2xl font-light drop-shadow-lg">
+          <p className="mt-4 text-lg md:text-2xl font-light drop-shadow-lg sm:hidden">
             {homepage?.title}
           </p>
         )}
@@ -165,12 +165,12 @@ const HeroSection: React.FC = () => {
       </div>
 
       {/* Right Content for Logo */}
-      <div className="absolute inset-y-0 right-0 w-1/2 flex items-center justify-center z-10">
+      <div className="flex flex-col items-center justify-center p-6 gap-4  text-center">
         <Image
           src={logo}
           alt="Brand Logo"
-          width={360}
-          height={360}
+          width={160}
+          height={160}
           className="object-contain rounded-lg shadow-lg"
         />
       </div>
