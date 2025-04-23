@@ -12,13 +12,19 @@ import {
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
+  // IconListDetails,
+  // IconBox,
   IconReport,
-  IconSearch,
-  IconSettings,
+  // IconSearch,
+  IconMeat,
   IconUsers,
+  // IconPackage,
+  IconSettings,
+  IconBox,
+  // IconUsers,
 } from "@tabler/icons-react";
-import { NavDocuments } from "@/components/nav-documents";
+import { getUserDocumentByUID } from "@/lib/utils";
+// import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
@@ -33,35 +39,62 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useEffect, useState } from "react";
 
 const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: IconDashboard,
-    },
-    {
-      title: "Users",
-      url: "/dashboard/users",
-      icon: IconFolder,
-    },
-    {
-      title: "Products",
-      url: "/dashboard/products",
-      icon: IconListDetails,
-    },
-    {
-      title: "User requests",
-      url: "/dashboard/user-requests",
-      icon: IconChartBar,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
+  navMain: {
+    adminNav: [
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: IconDashboard,
+      },
+      {
+        title: "Users",
+        url: "/dashboard/admin/users",
+        icon: IconUsers,
+      },
+
+      {
+        title: "Product Categories",
+        url: "/dashboard/admin/product-categories",
+        icon: IconBox,
+      },
+
+      {
+        title: "Meat Products",
+        url: "/dashboard/admin/products",
+        icon: IconMeat,
+      },
+      {
+        title: "User carts",
+        url: "/dashboard/admin/user-requests",
+        icon: IconChartBar,
+      },
+      {
+        title: "User orders",
+        url: "/dashboard/admin/user-orders",
+        icon: IconReport,
+      },
+    ],
+    customNav: [
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: IconDashboard,
+      },
+      {
+        title: "Profile",
+        url: "/dashboard/admin/users",
+        icon: IconFolder,
+      },
+      {
+        title: "My orders",
+        url: "/dashboard/my-orders",
+        icon: IconReport,
+      },
+    ],
+  },
   navClouds: [
     {
       title: "Capture",
@@ -113,7 +146,7 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/dashboard/profile",
       icon: IconSettings,
     },
     {
@@ -121,11 +154,11 @@ const data = {
       url: "#",
       icon: IconHelp,
     },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
+    // {
+    //   title: "Search",
+    //   url: "#",
+    //   icon: IconSearch,
+    // },
   ],
   documents: [
     {
@@ -148,8 +181,19 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user?.uid) {
+        const userDoc = await getUserDocumentByUID(user.uid);
+        setIsAdmin(userDoc?.role === "admin");
+      }
+    };
+    fetchUserRole();
+  }, [user]);
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar className="py-10" collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -168,8 +212,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {isAdmin ? (
+          <NavMain items={data.navMain.adminNav} />
+        ) : (
+          <NavMain items={data.navMain.customNav} />
+        )}
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
