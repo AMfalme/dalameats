@@ -118,7 +118,7 @@ export default function AdminCarts() {
           </TableHeader>
           <TableBody>
             {cartStates.map((cart, i) => (
-              <TableRow key={cart.items[i].id}>
+              <TableRow key={cart.items[i]?.id}>
                 <TableCell>
                   {usersMap[cart.user.id]?.email || "Unknown User"}
                 </TableCell>
@@ -128,7 +128,7 @@ export default function AdminCarts() {
                 <TableCell>KSH {cart.totalPrice.toFixed(2)}</TableCell>
                 <TableCell>{cart.status}</TableCell>
                 <TableCell>
-                  {cart.updatedAt.toDate().toLocaleString()}
+                  {/* {cart.updatedAt.toDate().toLocaleString()} */}
                 </TableCell>
                 <TableCell>
                   <ul className="list-disc pl-4">

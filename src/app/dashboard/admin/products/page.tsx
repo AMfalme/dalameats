@@ -32,16 +32,16 @@ export default function AdminProductTable() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const userRole = getCurrentUserRole(); // Fetch the current user's role
-  const user = useAuth();
+  const { user } = useAuth();
   useEffect(() => {
     const fetchUserRole = async () => {
-      if (user?.uid) {
+      if (user) {
         const userDoc = await getUserDocumentByUID(user.uid);
         setIsAdmin(userDoc?.role === "admin");
       }
     };
     fetchUserRole();
-  }, [user]);
+  }, [user, isAdmin]);
   useEffect(() => {
     const fetchProducts = async () => {
       try {

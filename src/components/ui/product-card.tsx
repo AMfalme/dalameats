@@ -38,10 +38,22 @@ export default function ProductCard({ product }: ProductCardProps) {
           height={500}
           className="w-full h-48 object-cover rounded-xl"
         />
-        <h3 className="mt-4 text-base font-bold">{product.name}</h3>
-        <p className="text-muted-foreground text-xs">
-          {product.price} KSH per {product.unit}
-        </p>
+        <div className="mt-4 flex items-start justify-between">
+          <div>
+            <h3 className="text-base font-bold">{product.name}</h3>
+            <p className="text-muted-foreground text-xs">
+              {product.price} KSH per {product.unit}
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground text-xs">Enter amount in kgs</p>
+            <input
+              type="text"
+              placeholder="Qty"
+              className="ml-4 border rounded-md px-2 py-1 w-20 text-sm"
+            />
+          </div>
+        </div>
         <div className="mt-4 flex justify-between overflow-x-hidden whitespace-nowrap">
           <Button
             variant="outline"

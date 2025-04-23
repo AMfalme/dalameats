@@ -64,10 +64,14 @@ export default function UserList() {
 
   const handleSave = async () => {
     if (selectedUser) {
-      // If the user is an admin, only the role will be updated
-      if (selectedUser?.role === "admin") {
-        await updateUser(selectedUser);
+      console.log("selectedUser: ", selectedUser);
+
+      // Add dob if it's missing or null
+      if (!selectedUser.dob) {
+        selectedUser.dob = ""; // or a default value like new Date().toISOString()
       }
+
+      await updateUser(selectedUser);
 
       setUsers(users.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
       setModalOpen(false);
@@ -117,7 +121,7 @@ export default function UserList() {
                 <TableCell>{user.address}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleUpdateClick(user)}>
-                    Update
+                    Update User Role
                   </Button>
                 </TableCell>
               </TableRow>
@@ -130,7 +134,7 @@ export default function UserList() {
         <Dialog open={modalOpen} onOpenChange={() => setModalOpen(!modalOpen)}>
           <DialogContent>
             <DialogHeader>
-              <h2 className="text-xl font-bold">Update User</h2>
+              <h2 className="text-xl font-bold">Update User Role</h2>
             </DialogHeader>
             <div className="space-y-2">
               <Input
@@ -147,7 +151,7 @@ export default function UserList() {
               />
               <Input
                 name="dob"
-                value={selectedUser.dob}
+                value={selectedUser.dob ? selectedUser.dob : ""}
                 placeholder="DOB"
                 disabled
               />

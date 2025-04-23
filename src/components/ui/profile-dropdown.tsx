@@ -22,7 +22,7 @@ export default function UserMenu() {
 
       <DropdownMenuContent align="end" className="mt-5 w-40">
         <DropdownMenuItem>
-          <Link href="/dashboard" className="flex items-center">
+          <Link href="/dashboard/profile" className="flex items-center">
             <User className="w-4 h-4 mr-2" />
             profile
           </Link>
