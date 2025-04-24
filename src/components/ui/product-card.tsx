@@ -49,7 +49,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="mt-4 flex justify-between overflow-x-hidden whitespace-nowrap">
           <Button
             variant="outline"
-            className="w-1/3 mr-2 rounded-full"
+            className="w-1/3 mr-2 rounded-full mt-2"
             onClick={() => setIsOpen(true)}
           >
             View Details
@@ -60,7 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
           ) : (
             <Button
-              className="w-1/3 ml-2 rounded-full"
+              className="w-1/3 ml-2 rounded-full mt-2"
               onClick={() => handleAddToCart(product)}
             >
               Add to Cart

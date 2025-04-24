@@ -211,6 +211,60 @@ export const fetchCartItems = createAsyncThunk(
   }
 );
 
+export const updateItemQuantity = createAsyncThunk(
+  "cart/updateItemQuantity",
+  async ({
+    uid,
+    productId,
+    newQuantity,
+  }: {
+    uid: string;
+    productId: string;
+    newQuantity: number;
+  }) => {
+    if (newQuantity < 1) return; // You can handle 0 deletion separately
+
+    const user = await getUserDocumentByUID(uid);
+    if (!user) return [];
+
+    const cartRef = collection(db, "cart");
+    const cartQuery = query(
+      cartRef,
+      where("user.id", "==", user.id),
+      where("status", "==", "active")
+    );
+    const cartSnapshot = await getDocs(cartQuery);
+
+    if (!cartSnapshot.empty) {
+      const cartDoc = cartSnapshot.docs[0];
+      const cartId = cartDoc.id;
+      const cartDataRef = doc(db, "cart", cartId);
+      const cartData = cartDoc.data();
+
+      const cartItems = Array.isArray(cartData.items) ? cartData.items : [];
+
+      const updatedItems = cartItems.map((item) =>
+        item.productId === productId ? { ...item, quantity: newQuantity } : item
+      );
+
+      const totalPrice = updatedItems.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+
+      await updateDoc(cartDataRef, {
+        items: updatedItems,
+        totalPrice,
+        updatedAt: Timestamp.now(),
+      });
+
+      return updatedItems;
+    }
+
+    return [];
+  }
+);
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
