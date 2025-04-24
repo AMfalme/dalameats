@@ -66,7 +66,7 @@ export default function Navbar() {
         <Link href="/" className="text-sm font-medium hover:underline">
           Home
         </Link>
-        <Link href="#contact" className="text-sm font-medium hover:underline">
+        <Link href="/#contact" className="text-sm font-medium hover:underline">
           Contact
         </Link>
         {user?.uid && (

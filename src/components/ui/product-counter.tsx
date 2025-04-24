@@ -24,7 +24,17 @@ export default function ProductQuantityCounter({
       >
         -
       </Button>
-      <span className="text-lg font-semibold">{item.quantity}</span>
+      <div>
+        <p className="text-muted-foreground text-center text-xs">
+          amount in kgs
+        </p>
+        <input
+          type="text"
+          placeholder="Qty"
+          className="ml-4 border rounded-md px-2 py-1 w-20 text-sm"
+          value={item.quantity}
+        />
+      </div>
       <Button variant="outline" size="sm" onClick={() => handleAddToCart(item)}>
         +
       </Button>

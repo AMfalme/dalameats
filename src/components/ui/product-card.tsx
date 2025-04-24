@@ -45,14 +45,6 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.price} KSH per {product.unit}
             </p>
           </div>
-          <div>
-            <p className="text-muted-foreground text-xs">Enter amount in kgs</p>
-            <input
-              type="text"
-              placeholder="Qty"
-              className="ml-4 border rounded-md px-2 py-1 w-20 text-sm"
-            />
-          </div>
         </div>
         <div className="mt-4 flex justify-between overflow-x-hidden whitespace-nowrap">
           <Button
@@ -63,7 +55,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             View Details
           </Button>
           {productCartItem ? (
-            <ProductQuantityCounter item={productCartItem} />
+            <ProductQuantityCounter
+              item={{ ...productCartItem, id: product.id }}
+            />
           ) : (
             <Button
               className="w-1/3 ml-2 rounded-full"

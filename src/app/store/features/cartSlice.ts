@@ -31,7 +31,13 @@ const initialState: CartStateDataType = {
 };
 export const addItemToCart = createAsyncThunk(
   "cart/addItem",
-  async ({ uid, item }: { uid: string; item: { id: string } }) => {
+  async ({
+    uid,
+    item,
+  }: {
+    uid: string;
+    item: { id: string; name: string; price: number; imageUrl: string };
+  }) => {
     try {
       // Fetch full user details from Firestore
       const user = await getUserDocumentByUID(uid);
@@ -40,40 +46,13 @@ export const addItemToCart = createAsyncThunk(
       }
 
       console.log("user data in addItemToCart: ", user);
-
-      const productQuery = query(
-        collection(db, "products"),
-        where("id", "==", item?.id)
-      );
-
-      const productSnap = await getDocs(productQuery);
-
-      if (productSnap.empty) {
-        throw new Error(`Product not found: ${item?.id}`);
-      }
-
-      let productData:
-        | { name: string; price: number; imageUrl: string }
-        | undefined;
-      productSnap.forEach((doc) => {
-        productData = doc.data() as {
-          name: string;
-          price: number;
-          imageUrl: string;
-        }; // gets the first matching doc
-      });
-
-      console.log("Product found:", productData);
+      console.log(item);
 
       const cartNewData = {
-        name:
-          productData?.name ??
-          (() => {
-            throw new Error("Product data is undefined");
-          })(),
-        price: productData.price,
+        name: item?.name,
+        price: item.price,
         quantity: 1,
-        imageUrl: productData.imageUrl,
+        imageUrl: item?.imageUrl,
         productId: item.id,
       };
 
@@ -87,21 +66,30 @@ export const addItemToCart = createAsyncThunk(
       const cartSnapshot = await getDocs(cartQuery);
       console.log("cartSnapshot: ", cartSnapshot);
       if (!cartSnapshot.empty) {
-        console.log(
-          "seems the logged in user already has this item in cart, adding plus product first"
-        );
+        //if active cart for logged in user exists
+        console.log("seems the logged in user already has an active cart");
         const cartDoc = cartSnapshot.docs[0];
         const cartId = cartDoc.id;
         const cartDataRef = doc(db, "cart", cartId);
         const cartData = cartDoc.data();
 
         const cartItems = Array.isArray(cartData.items) ? cartData.items : [];
+
+        console.log("items in cart before adding: ", cartItems);
+
+        // check if item being added already exists based on productId
+
+        console.log(item.id);
         const existingItemIndex = cartItems.findIndex(
           (cartItem) => cartItem.productId === item.id
         );
+        console.log("existingItemIndex: ", existingItemIndex);
 
         let updatedItems;
         if (existingItemIndex !== -1) {
+          console.log(
+            "seems the logged in user already has this item in cart, adding plus one product first"
+          );
           updatedItems = cartItems.map((cartItem) =>
             cartItem.productId === item.id
               ? { ...cartItem, quantity: cartItem.quantity + 1 }
@@ -133,7 +121,7 @@ export const addItemToCart = createAsyncThunk(
           status: "active",
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
-          totalPrice: productData.price,
+          totalPrice: item.price,
           user, // ✅ Store full user details here
         };
 

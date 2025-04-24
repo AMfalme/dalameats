@@ -15,8 +15,10 @@ export const useAddToCart = () => {
   const handleAddToCart = (item: Product) => {
     let updatedCart = [...cartItems];
 
-    if (user && user.uid) {
-      dispatch(addItemToCart({ uid: user.uid, item }));
+    console.log("We are adding this product: ", item);
+
+    if (user && user?.uid) {
+      dispatch(addItemToCart({ uid: user?.uid, item }));
     } else {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]"); // Get existing cart or create a new one
       //check if the item already exists in the cart list
