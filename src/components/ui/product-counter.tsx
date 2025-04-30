@@ -22,6 +22,11 @@ export default function ProductQuantityCounter({
   const [inputQty, setInputQty] = useState(item.quantity.toString());
 
   const { handleAddToCart } = useAddToCart();
+  const handleClickPlus = () => {
+    const newQty = parseInt(inputQty) + 1;
+    setInputQty(newQty.toString()); // 1. Update UI state
+    handleAddToCart(item); // 2. Trigger backend update
+  };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (/^\d*$/.test(val)) {
@@ -39,9 +44,18 @@ export default function ProductQuantityCounter({
           newQuantity: Number(inputQty),
         })
       );
+    } else {
+      console.log("user not logged in");
     }
   };
   const { handleRemoveFromCart } = useRemoveFromCart();
+  const handleClickMinus = () => {
+    const newQty = parseInt(inputQty) - 1;
+    if (newQty < 1) return; // optionally prevent quantity going below 1
+
+    setInputQty(newQty.toString()); // 1. Update UI state
+    handleRemoveFromCart(item); // 2. Trigger backend update
+  };
   return (
     <div className="flex items-center space-x-3 bg-muted/10 p-2 rounded-xl shadow-sm w-fit">
       {/* Decrease button */}
@@ -49,7 +63,7 @@ export default function ProductQuantityCounter({
         variant="ghost"
         size="icon"
         className="border border-input text-lg rounded-full w-8 h-8 -mt-5"
-        onClick={() => handleRemoveFromCart(item)}
+        onClick={() => handleClickMinus()}
       >
         −
       </Button>
@@ -72,7 +86,7 @@ export default function ProductQuantityCounter({
         variant="ghost"
         size="icon"
         className="border border-input text-lg rounded-full w-8 h-8 -mt-5"
-        onClick={() => handleAddToCart(item)}
+        onClick={() => handleClickPlus()}
       >
         +
       </Button>

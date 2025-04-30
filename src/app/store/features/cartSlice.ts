@@ -338,6 +338,13 @@ const cartSlice = createSlice({
       })
       .addCase(removeCartItem.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(updateItemQuantity.fulfilled, (state, action) => {
+        state.items = action.payload || [];
+        state.totalQuantity = (action.payload ?? []).reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
       });
   },
 });
