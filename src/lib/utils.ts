@@ -12,6 +12,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  Timestamp
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { CartState } from "@/types/cart";
@@ -76,8 +77,32 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+
+
+function getStartTimestamp(range?: string): Timestamp | null {
+  const now = new Date();
+  const start = new Date();
+
+  switch (range) {
+    case "today":
+      start.setHours(0, 0, 0, 0);
+      break;
+    case "week":
+      start.setDate(now.getDate() - 7);
+      break;
+    case "month":
+      start.setMonth(now.getMonth() - 1);
+      break;
+    default:
+      return null;
+  }
+
+  return Timestamp.fromDate(start);
+}
+
 export async function fetchFilteredCartStates(
-  status?: string
+  status?: string,
+  dateRange?: "today" | "week" | "month"
 ): Promise<CartState[]> {
   let q: Query<DocumentData> = collection(db, "cart");
 
@@ -85,16 +110,23 @@ export async function fetchFilteredCartStates(
     q = query(q, where("status", "==", status));
   }
 
+  const startTimestamp = getStartTimestamp(dateRange);
+
+  if (status === "sale" && startTimestamp) {
+    q = query(q, where("status", "==", status), where("soldAt", ">=", startTimestamp));
+  }
+
   const querySnapshot = await getDocs(q);
   console.log("querySnapShots: ", querySnapshot);
   return querySnapshot.docs.map((doc) => {
-    const data = doc.data() as Omit<CartState, "id">; // Ensure data matches CartState except for 'id'
+    const data = doc.data() as Omit<CartState, "id">;
     return {
       id: doc.id,
       ...data,
     };
   });
 }
+
 
 export async function updateOrderStatus(orderId: string, status: string) {
   const orderRef = doc(db, "cartStates", orderId);

@@ -72,7 +72,7 @@ const data = {
         icon: IconChartBar,
       },
       {
-        title: "User orders",
+        title: "Sales",
         url: "/dashboard/admin/user-orders",
         icon: IconReport,
       },

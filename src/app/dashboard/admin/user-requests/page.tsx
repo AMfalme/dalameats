@@ -40,16 +40,20 @@ import { userDetails } from "@/types/user";
 
 export default function AdminCarts() {
   const [cartStates, setCartStates] = useState<CartState[]>([]);
-  const selectedStatus = "all";
+ 
   const [usersMap, setUsersMap] = useState<Record<string, userDetails>>({});
   const [selectedCart, setSelectedCart] = useState<CartState | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedDateRange, setSelectedDateRange] = useState<"today" | "week" | "month" | "all">("all");
 
   useEffect(() => {
     fetchFilteredCartStates(
-      selectedStatus === "all" ? undefined : selectedStatus
+      selectedStatus === "all" ? undefined : selectedStatus,
+      selectedDateRange === "all" ? undefined : selectedDateRange
     ).then(setCartStates);
-  }, [selectedStatus]);
+  }, [selectedStatus, selectedDateRange]);
+  
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -98,9 +102,44 @@ export default function AdminCarts() {
 
   return (
     <Card className="p-4 space-y-4">
-      <CardHeader>
-        <h1 className="text-2xl font-bold">All Carts</h1>
-      </CardHeader>
+          <CardHeader>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold capitalize">{selectedStatus} Carts</h1>
+
+        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-4 items-center justify-between">
+  {/* Status filter */}
+  <div className="inline-flex rounded-full bg-gray-100 p-1 shadow-inner">
+    {["all", "cart", "ordered", "sale"].map((status) => (
+      <button
+        key={status}
+        onClick={() => setSelectedStatus(status)}
+        className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-150 ${
+          selectedStatus === status
+            ? "bg-black text-white shadow"
+            : "text-gray-700 hover:bg-white"
+        }`}
+      >
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </button>
+    ))}
+  </div>
+
+  {/* Date filter */}
+  <select
+    value={selectedDateRange}
+    onChange={(e) => setSelectedDateRange(e.target.value)}
+    className="px-3 py-1.5 border border-gray-300 rounded-md text-sm bg-white shadow-sm"
+  >
+    <option value="all">All Dates</option>
+    <option value="today">Sold Today</option>
+    <option value="week">This Week</option>
+    <option value="month">This Month</option>
+  </select>
+</div>
+        </div>
+      </div>
+    </CardHeader>
       <CardContent>
         {/* Cart Table */}
         <Table>
@@ -148,7 +187,7 @@ export default function AdminCarts() {
                           className="text-blue-600"
                           onClick={() => setSelectedCart(cart)}
                         >
-                          Mark as Completed
+                          Mark as Sold
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
