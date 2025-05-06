@@ -1,7 +1,19 @@
 import { userDetails } from "@/types/user";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+type ProductSummary = {
+  product: string;
+  size: string;
+  totalQty: number;
+  totalAmount: number;
+};
 
+type UserSummary = {
+  user: string;
+  totalOrders: number;
+  totalAmount: number;
+  items: { product: string; size: string; qty: number }[];
+};
 import {
   getDocs,
   collection,
@@ -102,7 +114,7 @@ function getStartTimestamp(range?: string): Timestamp | null {
 
 export async function fetchFilteredCartStates(
   status?: string,
-  dateRange?: "today" | "week" | "month"
+  startDate?: string // 👈 pass actual ISO timestamp here
 ): Promise<CartState[]> {
   let q: Query<DocumentData> = collection(db, "cart");
 
@@ -110,14 +122,11 @@ export async function fetchFilteredCartStates(
     q = query(q, where("status", "==", status));
   }
 
-  const startTimestamp = getStartTimestamp(dateRange);
-
-  if (status === "sale" && startTimestamp) {
-    q = query(q, where("status", "==", status), where("soldAt", ">=", startTimestamp));
+  if (startDate) {
+    q = query(q, where("status", "==", "sale"), where("soldAt", ">=", new Date(startDate)));
   }
 
   const querySnapshot = await getDocs(q);
-  console.log("querySnapShots: ", querySnapshot);
   return querySnapshot.docs.map((doc) => {
     const data = doc.data() as Omit<CartState, "id">;
     return {
@@ -128,7 +137,12 @@ export async function fetchFilteredCartStates(
 }
 
 
+
 export async function updateOrderStatus(orderId: string, status: string) {
   const orderRef = doc(db, "cartStates", orderId);
   await updateDoc(orderRef, { status });
 }
+
+
+
+

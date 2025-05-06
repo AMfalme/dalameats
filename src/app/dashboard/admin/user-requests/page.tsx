@@ -15,6 +15,8 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import { subDays, startOfDay } from "date-fns"; // Optional if using date-fns
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -38,9 +40,20 @@ export default function AdminCarts() {
   const [viewMode, setViewMode] = useState<"user" | "product">("user");
 
   useEffect(() => {
+    const now = new Date();
+    let startDate: string | undefined = undefined;
+  
+    if (selectedDateRange === "today") {
+      startDate = startOfDay(now).toISOString();
+    } else if (selectedDateRange === "week") {
+      startDate = subDays(now, 7).toISOString();
+    } else if (selectedDateRange === "month") {
+      startDate = subDays(now, 30).toISOString();
+    }
+  
     fetchFilteredCartStates(
       selectedStatus === "all" ? undefined : selectedStatus,
-      selectedDateRange === "all" ? undefined : selectedDateRange
+      startDate
     ).then(setCartStates);
   }, [selectedStatus, selectedDateRange]);
 
