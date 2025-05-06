@@ -196,7 +196,7 @@ export default function AdminCarts() {
             {cartStates
   .filter((cart) => cart.items.length > 0) // ✅ skip carts with no items
   .map((cart, i) => (
-                <TableRow key={cart.id}>
+                <TableRow key={i}>
                   <TableCell>
                     {usersMap[cart.user.id]?.email || "Unknown User"}
                   </TableCell>
