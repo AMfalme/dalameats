@@ -67,15 +67,20 @@ const data = {
         icon: IconMeat,
       },
       {
-        title: "User carts",
+        title: "User Orders",
         url: "/dashboard/admin/user-requests",
         icon: IconChartBar,
       },
-      {
-        title: "Sales",
-        url: "/dashboard/admin/user-orders",
-        icon: IconReport,
-      },
+      // {
+      //   title: "Orders Overview",
+      //   url: "/dashboard/admin/orders-overview",
+      //   icon: IconReport,
+      // },
+      // {
+      //   title: "Sales",
+      //   url: "/dashboard/admin/user-orders",
+      //   icon: IconReport,
+      // },
     ],
     customNav: [
       {

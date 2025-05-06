@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import {
   fetchFilteredCartStates,
   fetchUserById,
@@ -46,6 +47,7 @@ export default function AdminCarts() {
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedDateRange, setSelectedDateRange] = useState<"today" | "week" | "month" | "all">("all");
+  const [viewMode, setViewMode] = useState<"user" | "product">("user");
 
   useEffect(() => {
     fetchFilteredCartStates(
@@ -79,6 +81,50 @@ export default function AdminCarts() {
   // if (user.role !== "admin") {
   //   return null;
   // }
+
+
+  const productRequests = useMemo(() => {
+    const grouped: Record<string, {
+      name: string;
+      unitPrice: number;
+      requests: { email: string; quantity: number; total: number }[];
+      totalQty: number;
+      totalAmount: number;
+    }> = {};
+  
+    cartStates.forEach((cart) => {
+      const userEmail = usersMap[cart.user.id]?.email || "Unknown User";
+  
+      cart.items.forEach((item) => {
+        const key = item.name.toLowerCase(); // safer grouping by name
+  
+        if (!grouped[key]) {
+          grouped[key] = {
+            name: item.name,
+            unitPrice: item.price,
+            requests: [],
+            totalQty: 0,
+            totalAmount: 0,
+          };
+        }
+  
+        const total = item.quantity * item.price;
+  
+        grouped[key].requests.push({
+          email: userEmail,
+          quantity: item.quantity,
+          total,
+        });
+  
+        grouped[key].totalQty += item.quantity;
+        grouped[key].totalAmount += total;
+      });
+    });
+  
+    return grouped;
+  }, [cartStates, usersMap]);
+
+  
   const handleCompleteOrder = async () => {
     if (!selectedCart) return;
     setLoading(true);
@@ -136,12 +182,27 @@ export default function AdminCarts() {
     <option value="week">This Week</option>
     <option value="month">This Month</option>
   </select>
+  <div className="flex gap-2">
+  <Button
+    variant={viewMode === "user" ? "default" : "outline"}
+    onClick={() => setViewMode("user")}
+  >
+    View by User
+  </Button>
+  <Button
+    variant={viewMode === "product" ? "default" : "outline"}
+    onClick={() => setViewMode("product")}
+  >
+    View by Product
+  </Button>
+</div>
 </div>
         </div>
       </div>
     </CardHeader>
       <CardContent>
-        {/* Cart Table */}
+         {/* Cart Table */}
+      {viewMode === "user" ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -218,6 +279,47 @@ export default function AdminCarts() {
             ))}
           </TableBody>
         </Table>
+        ) : (
+          <>
+          {Object.entries(productRequests).map(([productId, data]) => (
+            <div key={productId} className="mb-8 border-b pb-4">
+              <h2 className="text-lg font-semibold mb-2">{data.name}</h2>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Unit Price</TableHead>
+                    <TableHead>Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.requests.map((req, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{req.email}</TableCell>
+                      <TableCell>{req.quantity}</TableCell>
+                      <TableCell>KSH {data.unitPrice}</TableCell>
+                      <TableCell>KSH {req.total.toFixed(2)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="mt-2 font-medium">
+                Subtotal for {data.name}: {data.totalQty} units – KSH {data.totalAmount.toFixed(2)}
+              </div>
+            </div>
+          ))}
+
+
+<div className="mt-6 text-xl font-bold">
+  Grand Total: KSH{" "}
+  {Object.values(productRequests)
+    .reduce((sum, p) => sum + p.totalAmount, 0)
+    .toFixed(2)}
+</div>
+          </>
+          
+      )}
       </CardContent>
     </Card>
   );
