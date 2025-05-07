@@ -9,12 +9,7 @@ import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { Mail, Phone } from "lucide-react";
 import { ChangeEventHandler, FormEventHandler } from "react";
 import { useInitCartFromLocalStorage } from "@/hooks/useInitCartFromLocalStorage";
-import {
-  FaFacebook,
-  FaInstagram,
-  FaTwitter,
-  FaQuoteLeft,
-} from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaQuoteLeft, FaTiktok } from "react-icons/fa";
 
 import { addNotification } from "@/app/store/features/notificationSlice";
 
@@ -412,13 +407,22 @@ export default function Home() {
           <div>
             <h3 className="text-xl font-semibold text-white mb-4">Follow Us</h3>
             <div className="flex justify-center md:justify-start gap-4">
-              <a href="#" className="text-white hover:text-red-400">
+              <a
+                href="https://www.facebook.com/p/DALA-MEAT-Suppliers-100092656645218/"
+                className="text-white hover:text-red-400"
+              >
                 <FaFacebook size={24} />
               </a>
-              <a href="#" className="text-white hover:text-red-400">
-                <FaInstagram size={24} />
+              <a
+                href="https://www.tiktok.com/@dalameatsuppliers/"
+                className="text-white hover:text-red-400"
+              >
+                <FaTiktok size={24} />
               </a>
-              <a href="#" className="text-white hover:text-red-400">
+              <a
+                href="https://x.com/Dalameatsuplier"
+                className="text-white hover:text-red-400"
+              >
                 <FaTwitter size={24} />
               </a>
             </div>
