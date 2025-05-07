@@ -1,30 +1,31 @@
 import { userDetails } from "@/types/user";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-type ProductSummary = {
-  product: string;
-  size: string;
-  totalQty: number;
-  totalAmount: number;
-};
+// type ProductSummary = {
+//   product: string;
+//   size: string;
+//   totalQty: number;
+//   totalAmount: number;
+// };
 
-type UserSummary = {
-  user: string;
-  totalOrders: number;
-  totalAmount: number;
-  items: { product: string; size: string; qty: number }[];
-};
+// type UserSummary = {
+//   user: string;
+//   totalOrders: number;
+//   totalAmount: number;
+//   items: { product: string; size: string; qty: number }[];
+// };
 import {
   getDocs,
   collection,
   query,
   where,
-  Query,
-  DocumentData,
+  // Query,
+  QueryConstraint,
+  // DocumentData,
   doc,
   getDoc,
   updateDoc,
-  Timestamp
+  // Timestamp,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { CartState } from "@/types/cart";
@@ -89,44 +90,45 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// function getStartTimestamp(range?: string): Timestamp | null {
+//   const now = new Date();
+//   const start = new Date();
 
+//   switch (range) {
+//     case "today":
+//       start.setHours(0, 0, 0, 0);
+//       break;
+//     case "week":
+//       start.setDate(now.getDate() - 7);
+//       break;
+//     case "month":
+//       start.setMonth(now.getMonth() - 1);
+//       break;
+//     default:
+//       return null;
+//   }
 
-function getStartTimestamp(range?: string): Timestamp | null {
-  const now = new Date();
-  const start = new Date();
-
-  switch (range) {
-    case "today":
-      start.setHours(0, 0, 0, 0);
-      break;
-    case "week":
-      start.setDate(now.getDate() - 7);
-      break;
-    case "month":
-      start.setMonth(now.getMonth() - 1);
-      break;
-    default:
-      return null;
-  }
-
-  return Timestamp.fromDate(start);
-}
+//   return Timestamp.fromDate(start);
+// }
 
 export async function fetchFilteredCartStates(
   status?: string,
-  startDate?: string // 👈 pass actual ISO timestamp here
+  startDate?: string // ISO timestamp
 ): Promise<CartState[]> {
-  let q: Query<DocumentData> = collection(db, "cart");
+  const constraints: QueryConstraint[] = [];
 
   if (status) {
-    q = query(q, where("status", "==", status));
+    constraints.push(where("status", "==", status));
   }
 
   if (startDate) {
-    q = query(q, where("status", "==", "sale"), where("soldAt", ">=", new Date(startDate)));
+    constraints.push(where("status", "==", "sale")); // required if filtering by soldAt
+    constraints.push(where("soldAt", ">=", new Date(startDate)));
   }
 
+  const q = query(collection(db, "cart"), ...constraints);
   const querySnapshot = await getDocs(q);
+
   return querySnapshot.docs.map((doc) => {
     const data = doc.data() as Omit<CartState, "id">;
     return {
@@ -136,13 +138,7 @@ export async function fetchFilteredCartStates(
   });
 }
 
-
-
 export async function updateOrderStatus(orderId: string, status: string) {
   const orderRef = doc(db, "cartStates", orderId);
   await updateDoc(orderRef, { status });
 }
-
-
-
-

@@ -1,11 +1,15 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   fetchFilteredCartStates,
   fetchUserById,
   updateOrderStatus,
 } from "@/lib/utils";
 import { CartState } from "@/types/cart";
+import { userDetails } from "@/types/user";
+import { subDays, startOfDay } from "date-fns";
+import { debounce } from "lodash"; // Debounce utility
+
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -15,8 +19,6 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { subDays, startOfDay } from "date-fns"; // Optional if using date-fns
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,7 +28,6 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { userDetails } from "@/types/user";
 
 export default function AdminCarts() {
   const [cartStates, setCartStates] = useState<CartState[]>([]);
@@ -39,39 +40,55 @@ export default function AdminCarts() {
   >("all");
   const [viewMode, setViewMode] = useState<"user" | "product">("user");
 
+  const fetchCarts = useMemo(
+    () =>
+      debounce(async () => {
+        const now = new Date();
+        let startDate: string | undefined;
+
+        switch (selectedDateRange) {
+          case "today":
+            startDate = startOfDay(now).toISOString();
+            break;
+          case "week":
+            startDate = subDays(now, 7).toISOString();
+            break;
+          case "month":
+            startDate = subDays(now, 30).toISOString();
+            break;
+        }
+
+        try {
+          const carts = await fetchFilteredCartStates(
+            selectedStatus === "all" ? undefined : selectedStatus,
+            startDate
+          );
+          setCartStates(carts || []);
+        } catch (err) {
+          console.error("Error fetching carts:", err);
+        }
+      }, 300),
+    [selectedStatus, selectedDateRange]
+  );
+
   useEffect(() => {
-    const now = new Date();
-    let startDate: string | undefined = undefined;
-  
-    if (selectedDateRange === "today") {
-      startDate = startOfDay(now).toISOString();
-    } else if (selectedDateRange === "week") {
-      startDate = subDays(now, 7).toISOString();
-    } else if (selectedDateRange === "month") {
-      startDate = subDays(now, 30).toISOString();
-    }
-  
-    fetchFilteredCartStates(
-      selectedStatus === "all" ? undefined : selectedStatus,
-      startDate
-    ).then(setCartStates);
-  }, [selectedStatus, selectedDateRange]);
+    fetchCarts();
+    return fetchCarts.cancel;
+  }, [fetchCarts]);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const userIds = [...new Set(cartStates.map((cart) => cart.user.id))];
+      const userIds = [...new Set(cartStates.map((c) => c.user.id))];
       const usersData = await Promise.all(
-        userIds.map(async (userId) => {
-          const user = await fetchUserById(userId);
-          return { [userId]: user || "Unknown User" };
+        userIds.map(async (id) => {
+          const user = await fetchUserById(id);
+          return { [id]: user || { email: "Unknown", phone: "N/A" } };
         })
       );
       setUsersMap(Object.assign({}, ...usersData));
     };
 
-    if (cartStates.length > 0) {
-      fetchUsers();
-    }
+    if (cartStates.length) fetchUsers();
   }, [cartStates]);
 
   const productRequests = useMemo(() => {
@@ -87,13 +104,9 @@ export default function AdminCarts() {
     > = {};
 
     cartStates.forEach((cart) => {
-      if (cart.items.length === 0) return; // ✅ Skip carts with no items
-
-      const userEmail = usersMap[cart.user.id]?.email || "Unknown User";
-
+      const userEmail = usersMap[cart.user.id]?.email || "Unknown";
       cart.items.forEach((item) => {
         const key = item.name.toLowerCase();
-
         if (!grouped[key]) {
           grouped[key] = {
             name: item.name,
@@ -103,15 +116,12 @@ export default function AdminCarts() {
             totalAmount: 0,
           };
         }
-
         const total = item.quantity * item.price;
-
         grouped[key].requests.push({
           email: userEmail,
           quantity: item.quantity,
           total,
         });
-
         grouped[key].totalQty += item.quantity;
         grouped[key].totalAmount += total;
       });
@@ -123,18 +133,15 @@ export default function AdminCarts() {
   const handleCompleteOrder = async () => {
     if (!selectedCart) return;
     setLoading(true);
-
     try {
       await updateOrderStatus(selectedCart.status, "completed");
       setCartStates((prev) =>
-        prev.map((cart) =>
-          cart.status === selectedCart.status
-            ? { ...cart, status: "completed" }
-            : cart
+        prev.map((c) =>
+          c.status === selectedCart.status ? { ...c, status: "completed" } : c
         )
       );
     } catch (error) {
-      console.error("Error updating order:", error);
+      console.error("Update error:", error);
     } finally {
       setLoading(false);
       setSelectedCart(null);
@@ -144,162 +151,173 @@ export default function AdminCarts() {
   return (
     <Card className="p-4 space-y-4">
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold capitalize">{selectedStatus} Carts</h1>
-          <div className="flex gap-2">
-            <div className="flex flex-wrap gap-4 items-center justify-between">
-              <div className="inline-flex rounded-full bg-gray-100 p-1 shadow-inner">
-                {["all", "cart", "ordered", "sale"].map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setSelectedStatus(status)}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-150 ${
-                      selectedStatus === status
-                        ? "bg-black text-white shadow"
-                        : "text-gray-700 hover:bg-white"
-                    }`}
-                  >
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
-                  </button>
-                ))}
-              </div>
-              <select
-                value={selectedDateRange}
-                onChange={(e) => setSelectedDateRange(e.target.value as "today" | "week" | "month" | "all")}
-                className="px-3 py-1.5 border border-gray-300 rounded-md text-sm bg-white shadow-sm"
+        <div className="flex justify-between items-center flex-wrap gap-2">
+          <h1 className="text-2xl font-bold capitalize">
+            {selectedStatus} Carts
+          </h1>
+          <div className="flex gap-2 flex-wrap items-center">
+            <div className="inline-flex rounded-full bg-gray-100 p-1 shadow-inner">
+              {["all", "cart", "ordered", "sale"].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setSelectedStatus(status)}
+                  className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-150 ${
+                    selectedStatus === status
+                      ? "bg-black text-white shadow"
+                      : "text-gray-700 hover:bg-white"
+                  }`}
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </button>
+              ))}
+            </div>
+            <select
+              value={selectedDateRange}
+              onChange={(e) =>
+                setSelectedDateRange(
+                  e.target.value as "today" | "week" | "month" | "all"
+                )
+              }
+              className="px-3 py-1.5 border border-gray-300 rounded-md text-sm bg-white shadow-sm"
+            >
+              <option value="all">All Dates</option>
+              <option value="today">Sold Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+            </select>
+            <div className="flex gap-2">
+              <Button
+                variant={viewMode === "user" ? "default" : "outline"}
+                onClick={() => setViewMode("user")}
               >
-                <option value="all">All Dates</option>
-                <option value="today">Sold Today</option>
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-              </select>
-              <div className="flex gap-2">
-                <Button
-                  variant={viewMode === "user" ? "default" : "outline"}
-                  onClick={() => setViewMode("user")}
-                >
-                  View by User
-                </Button>
-                <Button
-                  variant={viewMode === "product" ? "default" : "outline"}
-                  onClick={() => setViewMode("product")}
-                >
-                  View by Product
-                </Button>
-              </div>
+                View by User
+              </Button>
+              <Button
+                variant={viewMode === "product" ? "default" : "outline"}
+                onClick={() => setViewMode("product")}
+              >
+                View by Product
+              </Button>
             </div>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         {viewMode === "user" ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Phone Number</TableHead>
-                <TableHead>Total Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Updated</TableHead>
-                <TableHead>Items</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-            {cartStates
-  .filter((cart) => cart.items.length > 0) // ✅ skip carts with no items
-  .map((cart, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    {usersMap[cart.user.id]?.email || "Unknown User"}
-                  </TableCell>
-                  <TableCell>
-                    {usersMap[cart.user.id]?.phone || "Unknown Number"}
-                  </TableCell>
-                  <TableCell>KSH {cart.totalPrice.toFixed(2)}</TableCell>
-                  <TableCell>{cart.status}</TableCell>
-                  <TableCell>{/* Optional: show updatedAt */}</TableCell>
-                  <TableCell>
-                    <ul className="list-disc pl-4">
-                      {cart.items.map((item) => (
-                        <li key={item.id}>
-                          {item.name} ({item.quantity} x {item.price})
-                        </li>
-                      ))}
-                    </ul>
-                  </TableCell>
-                  <TableCell>
-                    {cart.status !== "completed" && (
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="text-blue-600"
-                            onClick={() => setSelectedCart(cart)}
-                          >
-                            Mark as Sold
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogTitle>Confirm Completion</DialogTitle>
-                          <DialogDescription>
-                            Are you sure you want to mark this order as
-                            <strong> Completed</strong>?
-                          </DialogDescription>
-                          <DialogFooter>
-                            <Button
-                              variant="outline"
-                              onClick={() => setSelectedCart(null)}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              onClick={handleCompleteOrder}
-                              disabled={loading}
-                            >
-                              {loading ? "Processing..." : "Confirm"}
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    )}
-                  </TableCell>
+          cartStates.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>User</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Total Price</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Updated</TableHead>
+                  <TableHead>Items</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {cartStates
+                  .filter((c) => c.items.length)
+                  .map((cart, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{usersMap[cart.user.id]?.email}</TableCell>
+                      <TableCell>{usersMap[cart.user.id]?.phone}</TableCell>
+                      <TableCell>KSH {cart.totalPrice.toFixed(2)}</TableCell>
+                      <TableCell>{cart.status}</TableCell>
+                      <TableCell>
+                        {new Date(cart.updatedAt.toDate()).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <ul className="list-disc pl-4">
+                          {cart.items.map((item) => (
+                            <li key={item.id}>
+                              {item.name} ({item.quantity} x {item.price})
+                            </li>
+                          ))}
+                        </ul>
+                      </TableCell>
+                      <TableCell>
+                        {cart.status !== "completed" && (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="text-blue-600"
+                                onClick={() => setSelectedCart(cart)}
+                              >
+                                Mark as Sold
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogTitle>Confirm Completion</DialogTitle>
+                              <DialogDescription>
+                                Are you sure you want to mark this order as{" "}
+                                <strong>Completed</strong>?
+                              </DialogDescription>
+                              <DialogFooter>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setSelectedCart(null)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={handleCompleteOrder}
+                                  disabled={loading}
+                                >
+                                  {loading ? "Processing..." : "Confirm"}
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className="text-center text-gray-500">No cart data available.</p>
+          )
         ) : (
           <>
-            {Object.entries(productRequests).map(([productId, data]) => (
-              <div key={productId} className="mb-8 border-b pb-4">
-                <h2 className="text-lg font-semibold mb-2">{data.name}</h2>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>User</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead>Unit Price</TableHead>
-                      <TableHead>Total</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {data.requests.map((req, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{req.email}</TableCell>
-                        <TableCell>{req.quantity}</TableCell>
-                        <TableCell>KSH {data.unitPrice}</TableCell>
-                        <TableCell>KSH {req.total.toFixed(2)}</TableCell>
+            {Object.entries(productRequests).length > 0 ? (
+              Object.entries(productRequests).map(([productId, data]) => (
+                <div key={productId} className="mb-8 border-b pb-4">
+                  <h2 className="text-lg font-semibold mb-2">{data.name}</h2>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Unit Price</TableHead>
+                        <TableHead>Total</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <div className="mt-2 font-medium">
-                  Subtotal for {data.name}: {data.totalQty} units – KSH{" "}
-                  {data.totalAmount.toFixed(2)}
+                    </TableHeader>
+                    <TableBody>
+                      {data.requests.map((req, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{req.email}</TableCell>
+                          <TableCell>{req.quantity}</TableCell>
+                          <TableCell>KSH {data.unitPrice}</TableCell>
+                          <TableCell>KSH {req.total.toFixed(2)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="mt-2 font-medium">
+                    Subtotal for {data.name}: {data.totalQty} units – KSH{" "}
+                    {data.totalAmount.toFixed(2)}
+                  </div>
                 </div>
-              </div>
-            ))}
-
+              ))
+            ) : (
+              <p className="text-center text-gray-500">
+                No product data available.
+              </p>
+            )}
             <div className="mt-6 text-xl font-bold">
               Grand Total: KSH{" "}
               {Object.values(productRequests)
