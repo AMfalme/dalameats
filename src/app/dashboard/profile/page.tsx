@@ -97,11 +97,11 @@ export default function ProfilePage() {
           </div>
           <div>
             <Label htmlFor="role">Role</Label>
-            <Input
+            <p
               id="role"
-              value={user.role}
-              onChange={(e) => handleChange("role", e.target.value)}
-            />
+            >
+              {user.role}
+            </p>
           </div>
           <div>
             <Label htmlFor="dob">Date of Birth</Label>
