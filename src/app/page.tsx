@@ -252,7 +252,7 @@ export default function Home() {
             How to Get to Us
           </h3>
           <p className="text-lg text-gray-600 mt-2 mb-10">
-            Visit our location for a better experience!
+            Order a day ahead to enjoy smooth and timely delivery!
           </p>
 
           <div className="mt-6 space-y-4 text-gray-700">
@@ -294,7 +294,7 @@ export default function Home() {
 
         <form
           onSubmit={handleSubmit}
-          className="w-1/3 mx-auto mt-8 p-6 bg-gray-50 rounded-lg shadow-md"
+          className="w-full sm:w-2/3 md:w-1/2 lg:w-1/3 mx-auto mt-8 p-6 bg-gray-50 rounded-lg shadow-md"
         >
           <div className="mb-10">
             <Input

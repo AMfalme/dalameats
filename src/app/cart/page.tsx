@@ -63,7 +63,7 @@ export default function CartCatalogue() {
                     <h3 className="text-lg font-semibold">{item.name}</h3>
                     <p className="text-gray-600">
                       {item.unit}
-                      KSH {item.price.toFixed(2)} per {item.unit}
+                      KSH {isNaN(Number(item.price)) ? '0.00' : Number(item.price).toFixed(2)} per {item.unit}
                     </p>
                     <p className="text-sm font-medium text-gray-700">
                       Total:{" "}
