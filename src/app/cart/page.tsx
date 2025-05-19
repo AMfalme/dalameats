@@ -10,8 +10,15 @@ import { CartItem } from "@/types/cart";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import type { AppDispatch } from "@/app/store/store";
-
+import { ChangeEvent, useEffect, useState } from "react";
+import { updateCart } from "@/lib/cart";
 export default function CartCatalogue() {
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+
   const dispatch = useDispatch<AppDispatch>();
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
@@ -21,13 +28,37 @@ export default function CartCatalogue() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const handleSubmit = () => {
-    dispatch(
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true); // Show loading indicator
+      const currentCartt = cartItems.find((p) => p.id === editingId);
+      if (currentCartt) {
+        // await updateCart(editingId, editedProduct);
+        // setProducts((prev) =>
+        //   prev.map((p) =>
+        //     p.id === editingId ? { ...p, ...editedProduct } : p
+        //   )
+        // );
+        setEditingId(null);
+      }
+    } catch (error) {
+      dispatch(
+      addNotification({
+        type: "error",
+        message: "Your order has been recieved. We will call you back!",
+      })
+    );
+      console.error("Error updating cart:", error);
+    } finally {
+      dispatch(
       addNotification({
         type: "success",
         message: "Your order has been recieved. We will call you back!",
       })
     );
+      setIsLoading(false); // Hide loading indicator
+    }
+   
     router.push("/");
   };
 
