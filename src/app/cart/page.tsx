@@ -14,12 +14,13 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { updateCart } from "@/lib/cart";
 export default function CartCatalogue() {
 
-  const [editingId, setEditingId] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
 
   const dispatch = useDispatch<AppDispatch>();
+  const cart : CartState = useSelector(
+    (state: RootState) => state.cart);
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
@@ -31,21 +32,20 @@ export default function CartCatalogue() {
   const handleSubmit = async () => {
     try {
       setIsLoading(true); // Show loading indicator
-      const currentCartt = cartItems.find((p) => p.id === editingId);
-      if (currentCartt) {
-        // await updateCart(editingId, editedProduct);
+      if (cart) {
+        console.log(cart.id)
+        await updateCart(cart.id, 'order');
         // setProducts((prev) =>
         //   prev.map((p) =>
         //     p.id === editingId ? { ...p, ...editedProduct } : p
         //   )
         // );
-        setEditingId(null);
       }
     } catch (error) {
       dispatch(
       addNotification({
         type: "error",
-        message: "Your order has been recieved. We will call you back!",
+        message: "An error occured. We will call you back!",
       })
     );
       console.error("Error updating cart:", error);

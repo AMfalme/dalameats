@@ -1,12 +1,8 @@
-import { collection, getDocs, updateDoc } from "firebase/firestore";
+import { collection, getDocs, updateDoc,  doc, deleteDoc } from "firebase/firestore";
 import { db } from "./firebase/config";
 import { Product } from "@/types/products";
-import { doc, deleteDoc } from "firebase/firestore";
 
-export async function deleteProduct(productId: string): Promise<void> {
-  const productRef = doc(db, "products", productId);
-  await deleteDoc(productRef);
-}
+
 export async function getProducts(): Promise<Product[]> {
   const querySnapshot = await getDocs(collection(db, "products"));
 
@@ -19,6 +15,12 @@ export async function getProducts(): Promise<Product[]> {
     };
   });
 }
+
+export async function deleteProduct(productId: string): Promise<void> {
+  const productRef = doc(db, "products", productId);
+  await deleteDoc(productRef);
+}
+
 export async function updateProduct(
   editingId: string,
   editedProduct: Partial<Product>

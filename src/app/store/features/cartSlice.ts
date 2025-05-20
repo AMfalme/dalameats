@@ -61,7 +61,7 @@ export const addItemToCart = createAsyncThunk(
       const cartQuery = query(
         cartRef,
         where("user.id", "==", user?.id),
-        where("status", "==", "active")
+        where("status", "==", "cart")
       );
       const cartSnapshot = await getDocs(cartQuery);
       console.log("cartSnapshot: ", cartSnapshot);

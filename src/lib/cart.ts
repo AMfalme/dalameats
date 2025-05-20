@@ -11,7 +11,7 @@ export async function deleteCart(cartId: string): Promise<void> {
 
 export async function updateCart(
     editingId: string,
-    editedCart: Partial<CartItem>
+    updateStatus: string
   ): Promise<void> {
     try {
       const cartRef = doc(db, "cart", editingId); // Make sure you're using the right doc reference
@@ -20,7 +20,9 @@ export async function updateCart(
       const { ...cartData } = editedCart;
   
       // Update the document in Firestore
-      await updateDoc(cartRef, cartData);
+      await updateDoc(cartRef, {
+        status: updateStatus
+      });
   
       console.log("Cart updated successfully!");
     } catch (error) {

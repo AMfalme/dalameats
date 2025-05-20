@@ -29,6 +29,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { CartState } from "@/types/cart";
+
 export async function fetchUsers() {
   const usersCollection = collection(db, "users");
   const usersSnapshot = await getDocs(usersCollection);

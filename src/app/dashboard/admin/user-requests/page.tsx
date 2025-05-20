@@ -133,6 +133,7 @@ export default function AdminCarts() {
   const handleCompleteOrder = async () => {
     if (!selectedCart) return;
     setLoading(true);
+    console.log(selectedCart.id);
     try {
       await updateOrderStatus(selectedCart.status, "completed");
       setCartStates((prev) =>

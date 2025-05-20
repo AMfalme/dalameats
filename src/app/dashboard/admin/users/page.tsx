@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchUsers, updateUser } from "@/lib/utils";
+import {  updateUser } from "@/lib/utils";
+import { fetchUsers } from "@/lib/users"
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
   Table,

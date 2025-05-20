@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "./features/counterSlice";
 import cartReducer from "./features/cartSlice";
 import notificationReducer from "./features/notificationSlice";
+
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
