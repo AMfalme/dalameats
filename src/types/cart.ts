@@ -16,8 +16,9 @@ export interface CartItem {
 }
 
 export interface CartState {
+  id: string;
   items: CartItem[];
-  status: "idle" | "active" | "completed" | "pending" | "archived";
+  status: "cart" | "ordered" | "sold" | "archived";
   createdAt: Timestamp;
   totalPrice: number;
   updatedAt: Timestamp;

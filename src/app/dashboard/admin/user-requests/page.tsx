@@ -63,6 +63,7 @@ export default function AdminCarts() {
             selectedStatus === "all" ? undefined : selectedStatus,
             startDate
           );
+          console.log('here are the carts that have been fetched: ', carts)
           setCartStates(carts || []);
         } catch (err) {
           console.error("Error fetching carts:", err);
@@ -135,10 +136,10 @@ export default function AdminCarts() {
     setLoading(true);
     console.log(selectedCart.id);
     try {
-      await updateOrderStatus(selectedCart.status, "completed");
+      await updateOrderStatus(selectedCart.id, "sold");
       setCartStates((prev) =>
         prev.map((c) =>
-          c.status === selectedCart.status ? { ...c, status: "completed" } : c
+          c.status === selectedCart.status ? { ...c, status: "sold" } : c
         )
       );
     } catch (error) {
@@ -158,7 +159,7 @@ export default function AdminCarts() {
           </h1>
           <div className="flex gap-2 flex-wrap items-center">
             <div className="inline-flex rounded-full bg-gray-100 p-1 shadow-inner">
-              {["all", "cart", "ordered", "sale"].map((status) => (
+              {["all", "cart", "ordered", "sold"].map((status) => (
                 <button
                   key={status}
                   onClick={() => setSelectedStatus(status)}
