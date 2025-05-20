@@ -1,32 +1,57 @@
-import { collection, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "./firebase/config";
-import {CartItem } from "@/types/cart"
-import { doc, deleteDoc } from "firebase/firestore";
+import { CartItem, CartState } from "@/types/cart";
 
+import {} from "@/types/cart";
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  deleteDoc,
+  QueryConstraint,
+  // DocumentData,
+  doc,
+  getDoc,
+  updateDoc,
+  // Timestamp,
+} from "firebase/firestore";
 export async function deleteCart(cartId: string): Promise<void> {
   const cartRef = doc(db, "cart", cartId);
   await deleteDoc(cartRef);
 }
 
-
-export async function updateCart(
-    editingId: string,
-    updateStatus: string
-  ): Promise<void> {
-    try {
-      const cartRef = doc(db, "cart", editingId); // Make sure you're using the right doc reference
-  
-      // Exclude the `id` from the data to prevent it from being updated
-      const { ...cartData } = editedCart;
-  
-      // Update the document in Firestore
-      await updateDoc(cartRef, {
-        status: updateStatus
-      });
-  
-      console.log("Cart updated successfully!");
-    } catch (error) {
-      console.error("Error updating cart:", error);
-      throw new Error("Error updating cart in Firestore");
-    }
+export async function updateCartStatus(orderId: string, status: string) {
+  try {
+    const orderRef = doc(db, "cart", orderId);
+    await updateDoc(orderRef, { status });
+  } catch (error) {
+    console.log(error);
   }
+}
+
+export async function fetchFilteredCartStates(
+  status?: string,
+  startDate?: string // ISO timestamp
+): Promise<CartState[]> {
+  const constraints: QueryConstraint[] = [];
+
+  if (status) {
+    constraints.push(where("status", "==", status));
+  }
+
+  if (startDate) {
+    constraints.push(where("status", "==", "sale")); // required if filtering by soldAt
+    constraints.push(where("soldAt", ">=", new Date(startDate)));
+  }
+
+  const q = query(collection(db, "cart"), ...constraints);
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => {
+    const data = doc.data() as Omit<CartState, "id">;
+    return {
+      id: doc.id,
+      ...data,
+    };
+  });
+}

@@ -16,7 +16,7 @@ export default function SlidingCart() {
   const navigate = useRouter();
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItems = useSelector((state: RootState) => state.cart.cart.items);
   const totalCount = useSelector(selectTotalCount);
   const navigateToCart = () => {
     navigate.push("/cart");

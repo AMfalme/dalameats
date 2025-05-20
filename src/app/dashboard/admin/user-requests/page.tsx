@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import {
-  fetchFilteredCartStates,
-  fetchUserById,
-  updateOrderStatus,
-} from "@/lib/utils";
+import { fetchUserById } from "@/lib/utils";
+import { fetchFilteredCartStates, updateCartStatus } from "@/lib/cart";
 import { CartState } from "@/types/cart";
 import { userDetails } from "@/types/user";
 import { subDays, startOfDay } from "date-fns";
@@ -63,7 +60,7 @@ export default function AdminCarts() {
             selectedStatus === "all" ? undefined : selectedStatus,
             startDate
           );
-          console.log('here are the carts that have been fetched: ', carts)
+          console.log("here are the carts that have been fetched: ", carts);
           setCartStates(carts || []);
         } catch (err) {
           console.error("Error fetching carts:", err);
@@ -136,7 +133,7 @@ export default function AdminCarts() {
     setLoading(true);
     console.log(selectedCart.id);
     try {
-      await updateOrderStatus(selectedCart.id, "sold");
+      await updateCartStatus(selectedCart.id, "sold");
       setCartStates((prev) =>
         prev.map((c) =>
           c.status === selectedCart.status ? { ...c, status: "sold" } : c
@@ -241,7 +238,7 @@ export default function AdminCarts() {
                         </ul>
                       </TableCell>
                       <TableCell>
-                        {cart.status !== "completed" && (
+                        {cart.status !== "sold" && (
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button

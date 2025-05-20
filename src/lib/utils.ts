@@ -28,7 +28,6 @@ import {
   // Timestamp,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
-import { CartState } from "@/types/cart";
 
 export async function fetchUsers() {
   const usersCollection = collection(db, "users");
@@ -111,40 +110,3 @@ export function cn(...inputs: ClassValue[]) {
 
 //   return Timestamp.fromDate(start);
 // }
-
-export async function fetchFilteredCartStates(
-  status?: string,
-  startDate?: string // ISO timestamp
-): Promise<CartState[]> {
-  const constraints: QueryConstraint[] = [];
-
-  if (status) {
-    constraints.push(where("status", "==", status));
-  }
-
-  if (startDate) {
-    constraints.push(where("status", "==", "sale")); // required if filtering by soldAt
-    constraints.push(where("soldAt", ">=", new Date(startDate)));
-  }
-
-  const q = query(collection(db, "cart"), ...constraints);
-  const querySnapshot = await getDocs(q);
-
-  return querySnapshot.docs.map((doc) => {
-    const data = doc.data() as Omit<CartState, "id">;
-    return {
-      id: doc.id,
-      ...data,
-    };
-  });
-}
-
-export async function updateOrderStatus(orderId: string, status: string) {
-  try {
-  const orderRef = doc(db, "cart", orderId);
-  await updateDoc(orderRef, { status });
-} catch(error) {
-  console.log(error);
-}
-
-}

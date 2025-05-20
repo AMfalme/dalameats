@@ -11,18 +11,15 @@ import { useDispatch } from "react-redux";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import type { AppDispatch } from "@/app/store/store";
 import { ChangeEvent, useEffect, useState } from "react";
-import { updateCart } from "@/lib/cart";
+import { updateCartStatus } from "@/lib/cart";
+import { CartState } from "@/types/cart";
 export default function CartCatalogue() {
-
-
   const [isLoading, setIsLoading] = useState(false);
 
-
   const dispatch = useDispatch<AppDispatch>();
-  const cart : CartState = useSelector(
-    (state: RootState) => state.cart);
+  const cart: CartState = useSelector((state: RootState) => state.cart.cart);
   const cartItems: CartItem[] = useSelector(
-    (state: RootState) => state.cart.items
+    (state: RootState) => state.cart.cart.items
   );
   const router = useRouter();
   const totalPrice = cartItems.reduce(
@@ -33,8 +30,8 @@ export default function CartCatalogue() {
     try {
       setIsLoading(true); // Show loading indicator
       if (cart) {
-        console.log(cart.id)
-        await updateCart(cart.id, 'order');
+        console.log(cart);
+        await updateCartStatus(cart.id, "order");
         // setProducts((prev) =>
         //   prev.map((p) =>
         //     p.id === editingId ? { ...p, ...editedProduct } : p
@@ -43,22 +40,22 @@ export default function CartCatalogue() {
       }
     } catch (error) {
       dispatch(
-      addNotification({
-        type: "error",
-        message: "An error occured. We will call you back!",
-      })
-    );
+        addNotification({
+          type: "error",
+          message: "An error occured. We will call you back!",
+        })
+      );
       console.error("Error updating cart:", error);
     } finally {
       dispatch(
-      addNotification({
-        type: "success",
-        message: "Your order has been recieved. We will call you back!",
-      })
-    );
+        addNotification({
+          type: "success",
+          message: "Your order has been recieved. We will call you back!",
+        })
+      );
       setIsLoading(false); // Hide loading indicator
     }
-   
+
     router.push("/");
   };
 
@@ -94,7 +91,11 @@ export default function CartCatalogue() {
                     <h3 className="text-lg font-semibold">{item.name}</h3>
                     <p className="text-gray-600">
                       {item.unit}
-                      KSH {isNaN(Number(item.price)) ? '0.00' : Number(item.price).toFixed(2)} per {item.unit}
+                      KSH{" "}
+                      {isNaN(Number(item.price))
+                        ? "0.00"
+                        : Number(item.price).toFixed(2)}{" "}
+                      per {item.unit}
                     </p>
                     <p className="text-sm font-medium text-gray-700">
                       Total:{" "}

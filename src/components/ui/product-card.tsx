@@ -19,7 +19,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const cartItems: CartItem[] = useSelector(
-    (state: RootState) => state.cart.items
+    (state: RootState) => state.cart.cart.items
   );
   const productCartItem = cartItems.find(
     (item) => item.productId === product.id

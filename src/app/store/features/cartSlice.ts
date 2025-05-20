@@ -17,14 +17,20 @@ import {
 import { db } from "@/lib/firebase/config";
 import { getUserDocumentByUID } from "@/lib/utils";
 export interface CartStateDataType {
-  items: CartItem[];
+  cart: {
+    cartId: string | null;
+    items: CartItem[];
+  };
   totalQuantity: number;
   loading: boolean;
   totalPrice: number;
 }
 
 const initialState: CartStateDataType = {
-  items: [],
+  cart: {
+    cartId: null,
+    items: [],
+  },
   totalQuantity: 0,
   loading: false,
   totalPrice: 0,
@@ -195,15 +201,24 @@ export const fetchCartItems = createAsyncThunk(
       const q = query(
         cartRef,
         where("user.id", "==", userId),
-        where("status", "==", "active")
+        where("status", "==", "cart")
       );
       const cartSnapshot = await getDocs(q);
 
       if (!cartSnapshot.empty) {
         const cartData = cartSnapshot.docs[0].data();
-        return Array.isArray(cartData.items) ? cartData.items : [];
+        const cartId = cartSnapshot.docs[0].id;
+        console.log("cartId: ", cartId);
+
+        return {
+          cartId,
+          items: Array.isArray(cartData.items) ? cartData.items : [],
+        };
       }
-      return []; // Return empty cart if no active cart exists
+      return {
+        cartId: null,
+        items: [],
+      }; // Return empty cart if no active cart exists
     } catch (error) {
       console.error("Error fetching cart:", error);
       throw error;
@@ -270,23 +285,25 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     setCart(state, action: PayloadAction<CartItem[]>) {
-      state.items = action.payload;
+      state.cart.items = action.payload;
     },
     removeItem: (state, action) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
-      state.totalQuantity = state.items.reduce(
+      state.cart.items = state.cart.items.filter(
+        (item) => item.id !== action.payload
+      );
+      state.totalQuantity = state.cart.items.reduce(
         (sum, item) => sum + item.quantity,
         0
       );
     },
     addItem: (state, action) => {
-      const existingItemIndex = state.items.findIndex(
+      const existingItemIndex = state.cart.items.findIndex(
         (item) => item.id === action.payload.id
       );
       console.log(existingItemIndex);
     },
     updateCartState: (state, action) => {
-      state.items = Array.isArray(action.payload) ? action.payload : [];
+      state.cart.items = Array.isArray(action.payload) ? action.payload : [];
       state.totalQuantity = action.payload.reduce(
         (sum: number, item: CartItem) => sum + item.quantity,
         0
@@ -299,8 +316,8 @@ const cartSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
-        state.items = action.payload || [];
-        state.totalQuantity = (action.payload ?? []).reduce(
+        state.cart.items = action.payload.items || [];
+        state.totalQuantity = (action.payload.items ?? []).reduce(
           (sum, item) => sum + item.quantity,
           0
         );
@@ -314,7 +331,7 @@ const cartSlice = createSlice({
         state.loading = true;
       })
       .addCase(addItemToCart.fulfilled, (state, action) => {
-        state.items = action.payload || [];
+        state.cart.items = action.payload || [];
         state.totalQuantity = action.payload.reduce(
           (sum, item) => sum + item.quantity,
           0
@@ -330,7 +347,7 @@ const cartSlice = createSlice({
       })
       .addCase(removeCartItem.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload || [];
+        state.cart.items = action.payload || [];
         state.totalQuantity = (action.payload ?? []).reduce(
           (sum, item) => sum + item.quantity,
           0
@@ -340,7 +357,7 @@ const cartSlice = createSlice({
         state.loading = false;
       })
       .addCase(updateItemQuantity.fulfilled, (state, action) => {
-        state.items = action.payload || [];
+        state.cart.items = action.payload || [];
         state.totalQuantity = (action.payload ?? []).reduce(
           (sum, item) => sum + item.quantity,
           0
@@ -357,4 +374,4 @@ export default cartSlice.reducer; // <-- This is the key export
 
 // Selector to compute totalCount dynamically
 export const selectTotalCount = (state: RootState) =>
-  state.cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  state.cart.cart.items.reduce((sum, item) => sum + item.quantity, 0);
