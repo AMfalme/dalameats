@@ -18,46 +18,58 @@ import type { AppDispatch } from "@/app/store/store";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import { addItemToCart } from "@/app/store/features/cartSlice";
 import { Product } from "@/types/products";
-import { saveUserDetails } from "@/lib/firebase/auth/signup";
 import { userDetails } from "@/types/user";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase/config";
+
+export const handleGoogleLogin = async (
+  dispatch: AppDispatch,
+  router: ReturnType<typeof useRouter>
+) => {
+  // console.log("I am here!!!!!!!");
+  const { result } = await signInWithGoogle();
+  console.log(result);
+  if (result && result.user) {
+    dispatch(
+      addNotification({
+        type: "success",
+        message: "Logged in with Google!",
+      })
+    );
+
+    const userRef = doc(db, "users", result.user.uid);
+    const docSnap = await getDoc(userRef);
+
+    const userData: userDetails = {
+      id: result.user.uid,
+      name: result.user?.email?.split("@")[0] || "",
+      email: result.user?.email ?? "",
+      phone: "",
+      address: "",
+      ...(docSnap.exists() ? {} : { role: "customer" }), // only add role if new user
+    };
+
+    await setDoc(userRef, userData, { merge: true }); // always merge to preserve fields
+
+    return router.push("/dashboard");
+  }
+
+  console.log("I am here!!!!!!!");
+  dispatch(
+    addNotification({
+      type: "info",
+      message:
+        "Unable to signin, Please check your internet access and try again.",
+    })
+  );
+
+  // You can also sync the cart or any other logic here like you did above
+};
 export function LoginForm() {
   const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const handleGoogleLogin = async () => {
-    // console.log("I am here!!!!!!!");
-    const { result } = await signInWithGoogle();
-    console.log(result);
-    if (result && result.user) {
-      dispatch(
-        addNotification({
-          type: "success",
-          message: "Logged in with Google!",
-        })
-      );
-      const userData: userDetails = {
-        id: result.user.uid,
-        name: result.user?.email?.split("@")[0] || "",
-        role: "customer",
-        email: result.user?.email ?? "",
-        phone: "",
-        address: "",
-      };
-      saveUserDetails(result?.user.uid, userData);
-      return router.push("/cart");
-    }
-    console.log("I am here!!!!!!!");
-    dispatch(
-      addNotification({
-        type: "info",
-        message:
-          "Unable to signin, Please check your internet access and try again.",
-      })
-    );
-
-    // You can also sync the cart or any other logic here like you did above
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -152,7 +164,7 @@ export function LoginForm() {
                   variant="outline"
                   type="button"
                   className="w-full"
-                  onClick={handleGoogleLogin}
+                  onClick={() => handleGoogleLogin(dispatch, router)}
                 >
                   <svg
                     viewBox="-3 0 262 262"
