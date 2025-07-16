@@ -10,14 +10,12 @@ import { CartItem } from "@/types/cart";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import type { AppDispatch } from "@/app/store/store";
-import { ChangeEvent, useEffect, useState } from "react";
-import { updateCart } from "@/lib/cart";
-export default function CartCatalogue() {
+import { useState } from "react";
 
+export default function CartCatalogue() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-
 
   const dispatch = useDispatch<AppDispatch>();
   const cartItems: CartItem[] = useSelector(
@@ -43,22 +41,22 @@ export default function CartCatalogue() {
       }
     } catch (error) {
       dispatch(
-      addNotification({
-        type: "error",
-        message: "Your order has been recieved. We will call you back!",
-      })
-    );
+        addNotification({
+          type: "error",
+          message: "Your order has been recieved. We will call you back!",
+        })
+      );
       console.error("Error updating cart:", error);
     } finally {
       dispatch(
-      addNotification({
-        type: "success",
-        message: "Your order has been recieved. We will call you back!",
-      })
-    );
+        addNotification({
+          type: "success",
+          message: "Your order has been recieved. We will call you back!",
+        })
+      );
       setIsLoading(false); // Hide loading indicator
     }
-   
+
     router.push("/");
   };
 
@@ -94,7 +92,11 @@ export default function CartCatalogue() {
                     <h3 className="text-lg font-semibold">{item.name}</h3>
                     <p className="text-gray-600">
                       {item.unit}
-                      KSH {isNaN(Number(item.price)) ? '0.00' : Number(item.price).toFixed(2)} per {item.unit}
+                      KSH{" "}
+                      {isNaN(Number(item.price))
+                        ? "0.00"
+                        : Number(item.price).toFixed(2)}{" "}
+                      per {item.unit}
                     </p>
                     <p className="text-sm font-medium text-gray-700">
                       Total:{" "}
@@ -119,7 +121,7 @@ export default function CartCatalogue() {
           Total: <span className="text-blue-600">KSH {totalPrice}</span>
         </p>
         <Button className="w-full mt-4" onClick={handleSubmit}>
-          Make order now!
+          {isLoading ? <p>Loading</p> : <p>Make order now!</p>}
         </Button>
       </div>
     </div>
