@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 // import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
+import { IconCirclePlusFilled, IconMail,  } from "@tabler/icons-react";
 
 export default function AddProductButton() {
   const [open, setOpen] = useState(false);
