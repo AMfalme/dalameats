@@ -8,6 +8,8 @@ import { saveUserDetails } from "@/lib/firebase/auth/signup";
 import { signInWithGoogle } from "@/lib/firebase/auth/googleSignIn";
 import { userDetails } from "@/types/user";
 import Image from "next/image";
+import {fetchUserById} from "@/lib/utils"
+
 const GoogleLoginButton = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -15,35 +17,58 @@ const GoogleLoginButton = () => {
   const handleGoogleLogin = async () => {
     try {
       const { result } = await signInWithGoogle();
-      if (result && result.user) {
+  
+      if (!result || !result.user) {
+        dispatch(
+          addNotification({
+            type: "info",
+            message: "Unable to sign in, please check your internet access.",
+          })
+        );
+        return;
+      }
+  
+      const uid = result.user.uid;
+  
+      // 1️⃣ Check if user exists in your DB
+      const existingUser = await fetchUserById(uid);
+      console.log("Existing user data:", existingUser); // Debug log  
+      if (existingUser) {
+        // User exists, preserve role and redirect]
+        console.log("logged in user exists in user db")
         dispatch(
           addNotification({
             type: "success",
-            message: "Logged in with Google!",
+            message: "Welcome back!",
           })
         );
-
-        const userData: userDetails = {
-          id: result.user.uid,
-          name: result.user?.email?.split("@")[0] || "",
-          email: result.user?.email ?? "",
-          phone: "",
-          address: "",
-          role: "customer",};
-
-        await saveUserDetails(result.user.uid, userData);
-        return router.push("/cart");
+        return router.push("/dashboard");
       }
-
+  
+      // 2️⃣ User does NOT exist, create new record
+      const userData: userDetails = {
+        id: uid,
+        name: result.user.email?.split("@")[0] || "",
+        email: result.user.email ?? "",
+        phone: "",
+        address: "",
+        role: "customer", // default role for new users
+      };
+      console.log("Creating new user with data:", userData); // Debug log
+      
+        await saveUserDetails(uid, userData);
+  
       dispatch(
         addNotification({
-          type: "info",
-          message:
-            "Unable to sign in, please check your internet access and try again.",
+          type: "success",
+          message: "Account created! Logged in successfully.",
         })
       );
+  
+      // 3️⃣ Redirect
+      return router.push("/cart");
     } catch (error) {
-      console.log(error)
+      console.error(error);
       dispatch(
         addNotification({
           type: "error",
@@ -62,6 +87,8 @@ const GoogleLoginButton = () => {
               src={"https://www.svgrepo.com/show/355037/google.svg"}
               alt="Google"
               className="w-5 h-5"
+              width={20}
+              height={`20`} 
             />
 
             Continue with Google
