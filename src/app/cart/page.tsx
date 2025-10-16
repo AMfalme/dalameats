@@ -10,13 +10,12 @@ import { CartItem } from "@/types/cart";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import type { AppDispatch } from "@/app/store/store";
-import { ChangeEvent, useEffect, useState } from "react";
-import { updateCart } from "@/lib/cart";
+import {  useState } from "react";
 export default function CartCatalogue() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
 
   const dispatch = useDispatch<AppDispatch>();
@@ -30,7 +29,7 @@ export default function CartCatalogue() {
   );
   const handleSubmit = async () => {
     try {
-      setIsLoading(true); // Show loading indicator
+      // setIsLoading(true); // Show loading indicator
       const currentCartt = cartItems.find((p) => p.id === editingId);
       if (currentCartt) {
         // await updateCart(editingId, editedProduct);
@@ -56,7 +55,7 @@ export default function CartCatalogue() {
         message: "Your order has been recieved. We will call you back!",
       })
     );
-      setIsLoading(false); // Hide loading indicator
+      // setIsLoading(false); // Hide loading indicator
     }
    
     router.push("/");
