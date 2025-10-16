@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 import ToastNotification from "@/components/ui/toastNotification";
 import WhatsAppButton from "./whatsapp-button";
 export const dynamic = "force-dynamic";
-
+import LoginPrompt from "@/components/login-prompt"
 import StoreProvider from "./store/StoreProvider";
 import SlidingCart from "@/components/sidebar-checkout";
 export default async function RootLayout({
@@ -46,6 +46,7 @@ export default async function RootLayout({
             >
               <ActiveThemeProvider initialTheme={activeThemeValue}>
                 <Navbar />
+                <LoginPrompt />
                 {children}
                 <ToastNotification /> {/* ✅ Global notification handler */}
                 <WhatsAppButton />
