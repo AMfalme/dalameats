@@ -1,7 +1,6 @@
 // components/GoogleLoginButton.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/app/store/features/notificationSlice";
@@ -25,12 +24,12 @@ const GoogleLoginButton = () => {
         );
 
         const userData: userDetails = {
-            id: result.user.uid,
-            name: result.user?.email?.split("@")[0] || "",
-            email: result.user?.email ?? "",
-            phone: "",
-            address: "",
-            ...(existingUser?.role ? { role: existingUser.role } : {}),
+          id: result.user.uid,
+          name: result.user?.email?.split("@")[0] || "",
+          email: result.user?.email ?? "",
+          phone: "",
+          address: "",
+          role: "customer"
         };
 
         await saveUserDetails(result.user.uid, userData);
@@ -45,6 +44,7 @@ const GoogleLoginButton = () => {
         })
       );
     } catch (error) {
+      console.log(error)
       dispatch(
         addNotification({
           type: "error",
