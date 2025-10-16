@@ -1,8 +1,7 @@
 "use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
+import { type Icon } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -27,6 +26,8 @@ return (<>
       <SidebarGroupContent className="flex flex-col gap-2">
        
         <SidebarMenu>
+
+        <AddProductButton/>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} href={item.url}>
@@ -39,7 +40,6 @@ return (<>
       </SidebarGroupContent>
     </SidebarGroup>
 
-        <AddProductButton/>
       
     
     </>

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { IconCirclePlusFilled } from "@tabler/icons-react";
+import {  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem, } from "@/components/ui/sidebar";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +17,7 @@ import { Label } from "@/components/ui/label";
 // import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
 
 export default function AddProductButton() {
   const [open, setOpen] = useState(false);
@@ -54,6 +56,9 @@ export default function AddProductButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
+        <SidebarMenu>
+          <SidebarMenuItem className="flex items-center gap-2">
+          
         <SidebarMenuButton
           tooltip="Add Product"
           onClick={() => setOpen(true)}
@@ -62,6 +67,15 @@ export default function AddProductButton() {
           <IconCirclePlusFilled />
           <span>Add Product</span>
         </SidebarMenuButton>
+        <Button
+              size="icon"
+              className="size-8 group-data-[collapsible=icon]:opacity-0"
+              variant="outline"
+            >
+              <IconMail />
+              <span className="sr-only">Inbox</span>
+            </Button></SidebarMenuItem>
+                </SidebarMenu>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">

@@ -1,4 +1,4 @@
-import { collection, getDocs, updateDoc } from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
 import { db } from "./firebase/config";
 import {CartItem } from "@/types/cart"
 import { doc, deleteDoc } from "firebase/firestore";
