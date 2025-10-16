@@ -7,7 +7,7 @@ import { addNotification } from "@/app/store/features/notificationSlice";
 import { saveUserDetails } from "@/lib/firebase/auth/signup";
 import { signInWithGoogle } from "@/lib/firebase/auth/googleSignIn";
 import { userDetails } from "@/types/user";
-
+import Image from "next/image";
 const GoogleLoginButton = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -29,8 +29,7 @@ const GoogleLoginButton = () => {
           email: result.user?.email ?? "",
           phone: "",
           address: "",
-          role: "customer"
-        };
+          role: "customer",};
 
         await saveUserDetails(result.user.uid, userData);
         return router.push("/cart");
@@ -59,11 +58,12 @@ const GoogleLoginButton = () => {
             onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-medium py-2 rounded-xl shadow-sm transition-all duration-200 mb-3"
           >
-            <img
-              src="https://www.svgrepo.com/show/355037/google.svg"
+            <Image
+              src={"https://www.svgrepo.com/show/355037/google.svg"}
               alt="Google"
               className="w-5 h-5"
             />
+
             Continue with Google
           </button>
    
