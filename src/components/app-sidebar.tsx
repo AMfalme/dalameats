@@ -90,7 +90,7 @@ const data = {
       },
       {
         title: "Profile",
-        url: "/dashboard/admin/users",
+        url: "/dashboard/profile",
         icon: IconFolder,
       },
       {

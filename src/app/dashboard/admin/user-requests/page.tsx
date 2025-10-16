@@ -72,6 +72,7 @@ export default function AdminCarts() {
   );
 
   useEffect(() => {
+    console.log("Fetching carts with status:"); 
     fetchCarts();
     return fetchCarts.cancel;
   }, [fetchCarts]);
@@ -224,7 +225,7 @@ export default function AdminCarts() {
                     <TableRow key={i}>
                       <TableCell>{usersMap[cart.user.id]?.email}</TableCell>
                       <TableCell>{usersMap[cart.user.id]?.phone}</TableCell>
-                      <TableCell>KSH {cart.totalPrice.toFixed(2)}</TableCell>
+                      <TableCell>KSH {isNaN(Number(cart.totalPrice)) ? '0.00' : Number(cart.totalPrice).toFixed(2)}</TableCell>
                       <TableCell>{cart.status}</TableCell>
                       <TableCell>
                         {new Date(cart.updatedAt.toDate()).toLocaleDateString()}

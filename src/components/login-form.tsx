@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LogInWithEmailAndPassword from "@/lib/firebase/auth/signin";
 import { signInWithGoogle } from "@/lib/firebase/auth/googleSignIn";
-
+import {fetchUserById} from "@/lib/utils"
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/app/store/store";
 
@@ -20,44 +20,78 @@ import { addItemToCart } from "@/app/store/features/cartSlice";
 import { Product } from "@/types/products";
 import { saveUserDetails } from "@/lib/firebase/auth/signup";
 import { userDetails } from "@/types/user";
+
+
+
+
+
+
 export function LoginForm() {
   const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const handleGoogleLogin = async () => {
-    // console.log("I am here!!!!!!!");
+  try {
     const { result } = await signInWithGoogle();
-    console.log(result);
-    if (result && result.user) {
+
+    if (!result || !result.user) {
+      dispatch(
+        addNotification({
+          type: "info",
+          message: "Unable to sign in, please check your internet access.",
+        })
+      );
+      return;
+    }
+
+    const uid = result.user.uid;
+
+    // 1️⃣ Check if user exists in your DB
+    const existingUser = await fetchUserById(uid);
+    console.log("Existing user data:", existingUser); // Debug log  
+    if (existingUser) {
+      // User exists, preserve role and redirect
       dispatch(
         addNotification({
           type: "success",
-          message: "Logged in with Google!",
+          message: "Welcome back!",
         })
       );
-      const userData: userDetails = {
-        id: result.user.uid,
-        name: result.user?.email?.split("@")[0] || "",
-        role: "customer",
-        email: result.user?.email ?? "",
-        phone: "",
-        address: "",
-      };
-      saveUserDetails(result?.user.uid, userData);
-      return router.push("/cart");
+      return router.push("/dashboard");
     }
-    console.log("I am here!!!!!!!");
+
+    // 2️⃣ User does NOT exist, create new record
+    const userData: userDetails = {
+      id: uid,
+      name: result.user.email?.split("@")[0] || "",
+      email: result.user.email ?? "",
+      phone: "",
+      address: "",
+      role: "customer", // default role for new users
+    };
+
+    await saveUserDetails(uid, userData);
+
     dispatch(
       addNotification({
-        type: "info",
-        message:
-          "Unable to signin, Please check your internet access and try again.",
+        type: "success",
+        message: "Account created! Logged in successfully.",
       })
     );
 
-    // You can also sync the cart or any other logic here like you did above
-  };
+    // 3️⃣ Redirect
+    return router.push("/cart");
+  } catch (error) {
+    console.error(error);
+    dispatch(
+      addNotification({
+        type: "error",
+        message: "An unexpected error occurred during login.",
+      })
+    );
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

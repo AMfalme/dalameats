@@ -25,12 +25,12 @@ const GoogleLoginButton = () => {
         );
 
         const userData: userDetails = {
-          id: result.user.uid,
-          name: result.user?.email?.split("@")[0] || "",
-          role: "customer",
-          email: result.user?.email ?? "",
-          phone: "",
-          address: "",
+            id: result.user.uid,
+            name: result.user?.email?.split("@")[0] || "",
+            email: result.user?.email ?? "",
+            phone: "",
+            address: "",
+            ...(existingUser?.role ? { role: existingUser.role } : {}),
         };
 
         await saveUserDetails(result.user.uid, userData);
