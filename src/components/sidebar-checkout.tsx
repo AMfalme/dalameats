@@ -6,7 +6,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import Link from "next/link";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { User, Trash2 } from "lucide-react";
 import { TbBasketDown } from "react-icons/tb";
@@ -19,7 +19,6 @@ import beefkidneys from "@/static/img/beef kidneys.png";
 
 export default function SlidingCart() {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const cartItems = useSelector((state: RootState) => state.cart.items);

@@ -9,6 +9,7 @@ import { CartState } from "@/types/cart";
 import { userDetails } from "@/types/user";
 import { subDays, startOfDay } from "date-fns";
 import { debounce } from "lodash"; // Debounce utility
+import { useDispatch } from "react-redux";
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
@@ -40,6 +41,10 @@ export default function AdminCarts() {
     "today" | "week" | "month" | "all"
   >("all");
   const [viewMode, setViewMode] = useState<"user" | "product">("user");
+
+
+  const dispatch = useDispatch();
+
 
   const fetchCarts = useMemo(
     () =>
@@ -143,11 +148,11 @@ export default function AdminCarts() {
         )
       );
       
-      fetchCarts();
-      addNotification({
-              type: "success",
-              message: "Successfully marked as sold!",
-            })
+      dispatch(addNotification({
+        type: "success",
+        message: "Successfully marked as sold!",
+      }));
+            fetchCarts();
       setSelectedCart(null);
     } catch (error) {
       console.error("Update error:", error);
