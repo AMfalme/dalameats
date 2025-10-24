@@ -139,6 +139,9 @@ export async function fetchFilteredCartStates(
 }
 
 export async function updateOrderStatus(orderId: string, status: string) {
-  const orderRef = doc(db, "cartStates", orderId);
-  await updateDoc(orderRef, { status });
+  const orderRef = doc(db, "cart", orderId);
+  await updateDoc(orderRef, {
+    status: status,
+    updatedAt: new Date()
+  });
 }

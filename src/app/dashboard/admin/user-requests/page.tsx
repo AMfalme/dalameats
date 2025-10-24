@@ -28,6 +28,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { addNotification } from "@/app/store/features/notificationSlice";
 
 export default function AdminCarts() {
   const [cartStates, setCartStates] = useState<CartState[]>([]);
@@ -135,12 +136,19 @@ export default function AdminCarts() {
     if (!selectedCart) return;
     setLoading(true);
     try {
-      await updateOrderStatus(selectedCart.status, "completed");
+      await updateOrderStatus(selectedCart.id, "sold");
       setCartStates((prev) =>
         prev.map((c) =>
-          c.status === selectedCart.status ? { ...c, status: "completed" } : c
+          c.id === selectedCart.id ? { ...c, status: "sold" } : c
         )
       );
+      
+      fetchCarts();
+      addNotification({
+              type: "success",
+              message: "Successfully marked as sold!",
+            })
+      setSelectedCart(null);
     } catch (error) {
       console.error("Update error:", error);
     } finally {
@@ -148,6 +156,12 @@ export default function AdminCarts() {
       setSelectedCart(null);
     }
   };
+  const statusFilters = [
+  { label: "All", value: "all" },
+  { label: "In Cart", value: "cart" },
+  { label: "Orders", value: "order" },
+  { label: "Sales", value: "sold" },
+];
 
   return (
     <Card className="p-4 space-y-4">
@@ -158,17 +172,17 @@ export default function AdminCarts() {
           </h1>
           <div className="flex gap-2 flex-wrap items-center">
             <div className="inline-flex rounded-full bg-gray-100 p-1 shadow-inner">
-              {["all", "cart", "ordered", "sale"].map((status) => (
+              {statusFilters.map(({ label, value }) => (
                 <button
-                  key={status}
-                  onClick={() => setSelectedStatus(status)}
+                  key={value}
+                  onClick={() => setSelectedStatus(value)}
                   className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-150 ${
-                    selectedStatus === status
+                    selectedStatus === value
                       ? "bg-black text-white shadow"
                       : "text-gray-700 hover:bg-white"
                   }`}
                 >
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                  {label}
                 </button>
               ))}
             </div>
@@ -240,7 +254,7 @@ export default function AdminCarts() {
                         </ul>
                       </TableCell>
                       <TableCell>
-                        {cart.status !== "completed" && (
+                        {cart.status == "order" && (
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button

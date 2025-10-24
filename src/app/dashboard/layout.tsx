@@ -7,6 +7,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner"; // import it
+import ToastNotification from "@/components/ui/toastNotification";
 
 export default function Page({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -35,6 +36,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
       <SidebarInset>
         <SiteHeader />
         {children}
+         <ToastNotification /> {/* ✅ Global notification handler */}
       </SidebarInset>
     </SidebarProvider>
   );
