@@ -66,7 +66,7 @@ const GoogleLoginButton = () => {
       );
   
       // 3️⃣ Redirect
-      return router.push("/cart");
+      return router.push("/dashboard");
     } catch (error) {
       console.error(error);
       dispatch(

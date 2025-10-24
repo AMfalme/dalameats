@@ -1,101 +1,173 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/components/providers/auth-provider"; // Adjust path accordingly
+import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/store/store";
-import { User } from "lucide-react";
+import { User, Trash2 } from "lucide-react";
 import { TbBasketDown } from "react-icons/tb";
 import { selectTotalCount } from "@/app/store/features/cartSlice";
+
+import { useRemoveFromCart } from "@/hooks/useRemoveFromCart";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import beefkidneys from "@/static/img/beef kidneys.png";
 
 export default function SlidingCart() {
-  const navigate = useRouter();
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalCount = useSelector(selectTotalCount);
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+
+  const { handleRemoveFromCart } = useRemoveFromCart();
+
   const navigateToCart = () => {
-    navigate.push("/cart");
-    setOpen(!open);
+    router.push("/cart");
+    setOpen(false);
   };
 
   return (
     <div>
-      {/* Basket Button - Positioned on the left when the cart is open */}
-      <Button
-        variant="outline"
-        className={` ${
-          open ? "left-4" : "fixed right-4"
-        } top-30 z-50 bg-amber-500 text-red rounded-full w-15 h-15 flex items-center justify-center transition-all`}
+      {/* Floating Cart Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(!open)}
+        className="fixed bottom-6 right-6 z-50 bg-amber-500 hover:bg-amber-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center transition-transform"
       >
         <div className="relative">
-          <div className="bg-amber-500 text-white p-4 rounded-full flex items-center justify-center">
-            <TbBasketDown className="text-white text-8xl" />
-            {totalCount > 0 && (
-              <div className="absolute top-0 right-0 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                {totalCount}
-              </div>
-            )}
-          </div>
+          <TbBasketDown className="text-2xl" />
+          {totalCount > 0 && (
+            <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center shadow">
+              {totalCount}
+            </span>
+          )}
         </div>
-      </Button>
+      </motion.button>
 
       {/* Sliding Cart */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="right"
-          className="w-[100%] md:w-[30%] h-full flex flex-col bg-amber-50 shadow-lg transform transition-all ease-in-out duration-300"
+          className="w-full md:w-[400px] flex flex-col bg-white shadow-2xl rounded-l-2xl overflow-hidden"
         >
           {/* Header */}
-          <div className="p-4 border-b bg-white">
-            {!user ? (
-              <div className="flex flex-col gap-2">
+          <div className="p-4 border-b flex items-center justify-between bg-amber-50">
+            <h2 className="text-lg font-semibold text-gray-800">
+              {user ? "Your Cart" : "Welcome"}
+            </h2>
+            {!user && (
+              <div className="flex gap-2">
                 <Link href="/login">
-                  <Button className="w-full">
-                    <User className="w-5 h-5 mr-2" />
-                    Sign In
+                  <Button size="sm">
+                    <User className="w-4 h-4 mr-1" /> Sign In
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button variant="outline" className="w-full">
+                  <Button size="sm" variant="outline">
                     Register
                   </Button>
                 </Link>
               </div>
-            ) : (
-              <h2 className="text-lg font-semibold bg-white">Your Cart</h2>
             )}
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 ">
-            {cartItems.length > 0 ? (
-              cartItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between p-3 border rounded-lg"
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <AnimatePresence>
+              {cartItems.length > 0 ? (
+                cartItems.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    layout
+                    className="flex items-center gap-4 border rounded-xl p-3 hover:shadow-md transition"
+                  >
+                    <Image
+                      src={item.imageUrl || beefkidneys}
+                      alt={item.name}
+                      width={70}
+                      height={70}
+                      className="rounded-lg object-cover shadow"
+                    />
+                    <div className="flex flex-col flex-1">
+                      <span className="font-medium text-gray-800">
+                        {item.name}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {item.price} KES each
+                      </span>
+                      <div className="flex items-center justify-between mt-1 text-sm text-gray-600">
+                        <span>Qty: {item.quantity}</span>
+                        <span className="font-semibold text-amber-600">
+                          {(item.price * item.quantity).toFixed(2)} KES
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-500 hover:text-red-600"
+                      onClick={() => handleRemoveFromCart(item)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex flex-col items-center justify-center mt-10 text-center text-gray-500"
                 >
-                  <span>{item.name}</span>
-                  <span className="font-semibold">x{item.quantity}</span>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-center">Your cart is empty</p>
-            )}
+                  <Image
+                    src="/empty-cart.svg"
+                    alt="Empty Cart"
+                    width={120}
+                    height={120}
+                    className="mb-4 opacity-80"
+                  />
+                  <p>Your cart is empty</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          {/* Checkout Button */}
+          {/* Total + Checkout */}
           {cartItems.length > 0 && (
-            <div className="p-4 border-t">
-              <Button className="w-full" onClick={navigateToCart}>
+            <motion.div
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="p-4 border-t bg-amber-50 sticky bottom-0"
+            >
+              <div className="flex items-center justify-between mb-3 text-gray-700 font-medium">
+                <span>Total</span>
+                <span className="text-lg text-amber-700 font-semibold">
+                  {totalPrice.toFixed(2)} KES
+                </span>
+              </div>
+              <Button
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium"
+                onClick={navigateToCart}
+              >
                 Proceed to Checkout
               </Button>
-            </div>
+            </motion.div>
           )}
         </SheetContent>
       </Sheet>
