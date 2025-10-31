@@ -10,10 +10,11 @@ import { CartItem } from "@/types/cart";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/app/store/features/notificationSlice";
 import type { AppDispatch } from "@/app/store/store";
-import {  useState } from "react";
-export default function CartCatalogue() {
+import { updateUserCartStatus } from "@/lib/utils";
+import { useAuth } from "@/components/providers/auth-provider";
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+export default function CartCatalogue() {
+  const { user } = useAuth();
 
   // const [isLoading, setIsLoading] = useState(false);
 
@@ -22,39 +23,65 @@ export default function CartCatalogue() {
   const cartItems: CartItem[] = useSelector(
     (state: RootState) => state.cart.items
   );
+  console.log("cartItems: ", cartItems); 
   const router = useRouter();
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
   const handleSubmit = async () => {
-    try {
-      // setIsLoading(true); // Show loading indicator
-      const currentCartt = cartItems.find((p) => p.id === editingId);
-      if (currentCartt) {
-        // await updateCart(editingId, editedProduct);
-        // setProducts((prev) =>
-        //   prev.map((p) =>
-        //     p.id === editingId ? { ...p, ...editedProduct } : p
-        //   )
-        // );
-        setEditingId(null);
-      }
-    } catch (error) {
-      dispatch(
+ try {
+  console.log("🛒 handleSubmit triggered");
+
+  if (!user?.uid) {
+    console.warn("⚠️ No user UID found — user must log in first.");
+    dispatch(
       addNotification({
         type: "error",
-        message: "Your order has been recieved. We will call you back!",
+        message: "You must be logged in to place an order.",
       })
     );
-      console.error("Error updating cart:", error);
-    } finally {
+    return;
+  }
+
+  console.log("✅ User logged in with UID:", user.uid);
+
+  console.log("⏳ Updating cart status to 'order' for user:", user.uid);
+  const result = await updateUserCartStatus(user.uid, "order");
+  console.log("✅ updateUserCartStatus completed:", result);
+
+  // Optional success check — depends on how updateUserCartStatus returns
+  if (result === undefined || result === null) {
+    console.warn("⚠️ updateUserCartStatus returned empty result. Check Firestore function.");
+  } else {
+    console.log("🔥 Cart status successfully updated in Firestore!");
+  }
+
+  dispatch(
+    addNotification({
+      type: "success",
+      message: "Order placed successfully!",
+    })
+  );
+
+  console.log("✅ Notification dispatched for success.");
+} catch (error) {
+  console.error("❌ Error placing order:", error);
+
+  dispatch(
+    addNotification({
+      type: "error",
+      message: "Something went wrong while placing your order.",
+    })
+  );
+}
+ finally {
       dispatch(
       addNotification({
         type: "success",
         message: "Your order has been recieved. We will call you back!",
-      })
-    );
+        })
+      );
       // setIsLoading(false); // Hide loading indicator
     }
    

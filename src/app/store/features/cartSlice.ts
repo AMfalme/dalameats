@@ -61,7 +61,7 @@ export const addItemToCart = createAsyncThunk(
       const cartQuery = query(
         cartRef,
         where("user.id", "==", user?.id),
-        where("status", "==", "active")
+        where("status", "==", "cart")
       );
       const cartSnapshot = await getDocs(cartQuery);
       console.log("cartSnapshot: ", cartSnapshot);
@@ -118,7 +118,7 @@ export const addItemToCart = createAsyncThunk(
         );
         const newCart = {
           items: [cartNewData],
-          status: "active",
+          status: "cart",
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
           totalPrice: item.price,
@@ -142,7 +142,7 @@ export const removeCartItem = createAsyncThunk(
     const q = query(
       cartRef,
       where("user.id", "==", userId),
-      where("status", "==", "active")
+      where("status", "==", "cart")
     );
     const cartSnap = await getDocs(q);
 
@@ -195,7 +195,7 @@ export const fetchCartItems = createAsyncThunk(
       const q = query(
         cartRef,
         where("user.id", "==", userId),
-        where("status", "==", "active")
+        where("status", "==", "cart")
       );
       const cartSnapshot = await getDocs(q);
 
@@ -231,7 +231,7 @@ export const updateItemQuantity = createAsyncThunk(
     const cartQuery = query(
       cartRef,
       where("user.id", "==", user.id),
-      where("status", "==", "active")
+      where("status", "==", "cart")
     );
     const cartSnapshot = await getDocs(cartQuery);
 

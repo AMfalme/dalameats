@@ -145,3 +145,44 @@ export async function updateOrderStatus(orderId: string, status: string) {
     updatedAt: new Date()
   });
 }
+
+export async function updateUserCartStatus(userId: string, status: string) {
+
+
+   const cartRef = collection(db, "cart");
+      const cartQuery = query(
+        cartRef,
+        where("user.id", "==", userId),
+        where("status", "==", "cart")
+      );
+      const cartSnapshot = await getDocs(cartQuery);
+
+    if (!cartSnapshot.empty) {
+
+
+    const cartDoc = cartSnapshot.docs[0];
+console.log("🧾 Found active cart for user:", userId, "Cart ID:", cartDoc.id);
+console.log("🔄 Current cart status before update:", cartDoc.data().status);
+
+await updateDoc(cartDoc.ref, {
+  status,
+  updatedAt: new Date(),
+});
+
+console.log("✅ Cart status updated in Firestore. Reading it back to verify...");
+
+const updatedSnap = await getDoc(cartDoc.ref);
+if (updatedSnap.exists()) {
+  const updatedData = updatedSnap.data();
+  console.log("🆕 Updated cart data:", updatedData);
+  console.log("🎯 New cart status:", updatedData.status);
+} else {
+  console.warn("⚠️ Cart document not found after update! Check Firestore path.");
+}
+    return true;
+  }
+    console.warn("No active cart found for user:", userId);
+    // Optionally, you can create a new cart if none exists
+    // await addDoc(userCartRef, { userId, status, items: [], createdAt: new Date() });
+    return false;
+  }

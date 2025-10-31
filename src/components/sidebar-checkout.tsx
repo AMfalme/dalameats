@@ -44,7 +44,11 @@ export default function SlidingCart() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 bg-amber-500 hover:bg-amber-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center transition-transform"
+        
+        className={` ${
+          open ? "left-4" : "fixed right-4"
+        } top-30 z-50 bg-amber-500 hover:bg-amber-600 text-white rounded-full w-15 h-15 flex items-center justify-center transition-all transition-transform`}
+      
       >
         <div className="relative">
           <TbBasketDown className="text-2xl" />
