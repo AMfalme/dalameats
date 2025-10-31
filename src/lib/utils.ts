@@ -161,24 +161,13 @@ export async function updateUserCartStatus(userId: string, status: string) {
 
 
     const cartDoc = cartSnapshot.docs[0];
-console.log("🧾 Found active cart for user:", userId, "Cart ID:", cartDoc.id);
-console.log("🔄 Current cart status before update:", cartDoc.data().status);
 
 await updateDoc(cartDoc.ref, {
   status,
   updatedAt: new Date(),
 });
 
-console.log("✅ Cart status updated in Firestore. Reading it back to verify...");
 
-const updatedSnap = await getDoc(cartDoc.ref);
-if (updatedSnap.exists()) {
-  const updatedData = updatedSnap.data();
-  console.log("🆕 Updated cart data:", updatedData);
-  console.log("🎯 New cart status:", updatedData.status);
-} else {
-  console.warn("⚠️ Cart document not found after update! Check Firestore path.");
-}
     return true;
   }
     console.warn("No active cart found for user:", userId);

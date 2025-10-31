@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Enjoy premium meats with convenience, affordability, and guaranteed freshness.",
 };
 import ToastNotification from "@/components/ui/toastNotification";
-import WhatsAppButton from "./whatsapp-button";
+import TawkToChat from "./whatsapp-button";
 export const dynamic = "force-dynamic";
 import LoginPrompt from "@/components/login-prompt"
 import StoreProvider from "./store/StoreProvider";
@@ -49,7 +49,7 @@ export default async function RootLayout({
                 <LoginPrompt />
                 {children}
                 <ToastNotification /> {/* ✅ Global notification handler */}
-                <WhatsAppButton />
+                <TawkToChat />
                 <SlidingCart />
               </ActiveThemeProvider>
             </ThemeProvider>
