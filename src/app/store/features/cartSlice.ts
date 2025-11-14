@@ -211,6 +211,25 @@ export const fetchCartItems = createAsyncThunk(
   }
 );
 
+
+export async function getUserCart(userId: string) {
+  const constraints = [
+    where("userId", "==", userId),
+    where("status", "==", "cart"),
+  ];
+
+  const q = query(collection(db, "cart"), ...constraints);
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => {
+    const data = doc.data() as Omit<CartState, "id">;
+    return {
+      id: doc.id,
+      ...data,
+    };
+  });
+}
+
 export const updateItemQuantity = createAsyncThunk(
   "cart/updateItemQuantity",
   async ({
